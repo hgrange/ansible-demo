@@ -37,19 +37,10 @@
             apt:
                pkg: 
                   - apache2   
-                  - mysql-server
-                  - php5
                state: present
                update_cache: yes
                force_apt_get: true
         rescue:
-          - name: Install php5.6 packages
-            apt:
-               pkg:
-                  - php5.6
-                  - php5.6-mysql   
-               state: present
-               update_cache: yes
 
       -  name: start apache server
          service: 
@@ -57,11 +48,6 @@
               state: started
               enabled: yes
 
-      -  name: start mysql service
-         service:
-             name: mysql
-             state: started
-             enabled: yes
 
       -  name:  create target directory
          file: path=/var/www/html state=directory mode=0755
