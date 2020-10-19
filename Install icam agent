@@ -1,0 +1,79 @@
+---
+- name: Install icam agent
+  hosts: all
+  vars_files:
+    - vars/commonvars.yml
+    - vars/icamvars.yml
+
+  tasks:
+  - debug:
+      msg: Import uninstall playbook
+
+#- import_playbook: uninstall_icamagent.yml
+#  when:
+#    - (inst_type | lower) == "install" 
+
+#  - set_fact:
+#      imgfile: "{{ install_image | basename }}"
+
+#  - set_fact:
+#      imgfile: APPMGT_Agent_Install.tar.gz
+#      when: public_url is defined and public_url == "true"
+
+
+- import_playbook: filemanager.yml
+  vars:
+    src_type: "{{inst_image_type}}"
+    src_image: "{{install_image}}"
+    untar: yes
+    del_dir: yes
+    imagefile: "appmgmt_install.tar.gz"
+
+#  - set_fact:
+#      imgfile: "{{ install_input_file_src | basename }}"
+
+#  - set_fact:
+#      imgfile: silent_install.txt
+#      when: public_url is defined and public_url == "true"
+
+
+- import_playbook: filemanager.yml
+  vars:
+    src_type: "{{silent_type}}"
+    src_image: "{{install_input_file_src}}"
+    untar: no
+    imagefile: "install.txt"
+
+
+- name: Install icam agent
+  hosts: all
+  vars_files:
+    - vars/commonvars.yml
+    - vars/icamvars.yml
+ 
+  tasks:
+
+# ------------- Copy silent install and config files ------------------------------------
+
+  - name: set def_file to true since silent_file is specified by the user
+    set_fact: 
+      def_file: true
+    when: inst_silent_file is defined
+
+
+  - name: set def_file to false as user is using default silent file 
+    set_fact:
+      def_file: false
+    when: inst_silent_file is not defined
+
+
+  - name: "Replace AGENT_HOME={{agent_home}} in the silent file  {{ install_input_file_dest }}"
+    lineinfile:
+      path:  "{{ install_input_file_dest }}"
+      regexp: '^AGENT_HOME='
+      line: "AGENT_HOME={{agent_home}}"
+    when:
+      - agent_home is defined
+
+  - name: silent install of agent-- "cd {{target_dir}}/APPMGT*; sudo ./installAPMAgents.sh  -p {{ install_input_file_dest }}  > /tmp/icam.log 2>&1 "
+    shell: "cd {{target_dir}}/APPMGT*;  sudo ./installAPMAgents.sh  -p {{ install_input_file_dest }} > /tmp/icam.log 2>&1 "
