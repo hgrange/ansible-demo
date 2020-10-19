@@ -9,38 +9,21 @@
         timeout: 300
       ignore_errors: yes
    tasks:
-      
-     
+
       - name: Install tools for adding PPA repositories
         apt:
           name: software-properties-common
           state: latest
-          
-      - name: apt clean
-        raw: apt-get -y clean && apt-get -y autoclean
-        
-      -  name: Add ppa repository
-         apt_repository: 
-             repo: ppa:ondrej/php
-             state: present
-             update_cache: no
-             
-      - name: Purge unattended upgrades
-        raw: apt-get -y purge unattended-upgrades    
 
-      - name: Update apt cache
-        raw: apt-get -y update
-        
-      - name: Install lamp stack
-        block:
-          - name: Install lamp stack with php5 packages
-            apt:
-               pkg: 
-                  - apache2   
-               state: present
-               update_cache: yes
-               force_apt_get: true
-        rescue:
+      -  name: Add ppa repository
+         apt_repository: repo=ppa:ondrej/php
+
+      -  name: Install lamp stack
+         apt:
+            pkg:
+              - apache2      
+            state: present
+            update_cache: yes
 
       -  name: start apache server
          service: 
