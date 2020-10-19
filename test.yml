@@ -48,6 +48,5 @@
               state: started
               enabled: yes
 
-
       -  name:  create target directory
          file: path=/var/www/html state=directory mode=0755
