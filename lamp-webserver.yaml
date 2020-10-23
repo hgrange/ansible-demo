@@ -30,6 +30,8 @@
             state: present
             update_cache: yes
             ignore_errors: yes
+      - name: Create a new config file
+        file: path=/etc/myfonfig.cfg state=touch
           
       - name: ip dbserver in config file
         copy:
