@@ -6,7 +6,7 @@
     - pause: seconds=30
     - name: Wait for connection
       wait_for_connection:
-        timeout: 300
+        timeout: 600
       ignore_errors: yes
    tasks:
 
@@ -27,7 +27,8 @@
               - mysql-client
             state: present
             update_cache: yes
-            
+          ignore_errors: yes
+          
       - name: ip dbserver in config file
         lineinfile:
           path: "/etc/myfonfig.cfg"
@@ -38,6 +39,7 @@
               name: apache2
               state: started
               enabled: yes
-
+         ignore_errors: yes
+         
       -  name:  create target directory
          file: path=/var/www/html state=directory mode=0755
