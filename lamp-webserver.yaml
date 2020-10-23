@@ -27,6 +27,11 @@
               - mysql-client
             state: present
             update_cache: yes
+            
+      - name: ip dbserver in config file
+        lineinfile:
+          path: "/etc/myfonfig.cfg"
+          line: "dbserver: {{ ip-db }}"
 
       -  name: start apache server
          service: 
