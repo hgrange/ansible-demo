@@ -15,9 +15,6 @@
           name: software-properties-common
           state: latest
 
-      -  name: Add ppa repository
-         apt_repository: repo=ppa:ondrej/php
-
       -  name: Install lamp stack
          apt:
             pkg:
