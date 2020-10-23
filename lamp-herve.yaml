@@ -56,7 +56,7 @@
     - pause: seconds=5
     - name: Wait for connection
       wait_for_connection:
-        timeout: 300
+        timeout: 600
       ignore_errors: yes
    tasks:
 
