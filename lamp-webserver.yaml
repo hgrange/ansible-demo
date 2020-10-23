@@ -32,9 +32,9 @@
             ignore_errors: yes
           
       - name: ip dbserver in config file
-        lineinfile:
-          path: "/etc/myfonfig.cfg"
-          line: "dbserver: {{ ipdb }}"
+        copy:
+         content: "dbserver: {{ ipdb }}"
+         dest: "/etc/myfonfig.cfg"
 
       -  name: start apache server
          service: 
