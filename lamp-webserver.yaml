@@ -23,8 +23,7 @@
          apt:
             pkg:
               - apache2
-              - php5
-              - php5-mysql   
+              - php-dev 
             state: present
             update_cache: yes
 
