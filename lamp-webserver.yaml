@@ -34,7 +34,7 @@
       - name: ip dbserver in config file
         lineinfile:
           path: "/etc/myfonfig.cfg"
-          line: "dbserver: {{ ip-db }}"
+          line: "dbserver: {{ ipdb }}"
 
       -  name: start apache server
          service: 
