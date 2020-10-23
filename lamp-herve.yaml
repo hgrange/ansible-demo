@@ -19,9 +19,6 @@
          apt:
             pkg:
               - apache2   
-              - mysql-server
-              - php5
-              - php5-mysql   
             state: present
             update_cache: yes
 
@@ -30,12 +27,6 @@
               name: apache2
               state: started
               enabled: yes
-
-      -  name: start mysql service
-         service:
-             name: mysql
-             state: started
-             enabled: yes
 
       -  name:  create target directory
          file: path=/var/www/html state=directory mode=0755
