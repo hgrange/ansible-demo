@@ -1,6 +1,6 @@
 ---
 # Setup LAMP Stack
--  hosts: "{{ webhosts }}"
+-  hosts: "webhosts"
    become: true
    pre_tasks:
     - pause: seconds=30
