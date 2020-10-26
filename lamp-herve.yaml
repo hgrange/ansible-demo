@@ -27,13 +27,10 @@
            dest: "/etc/hosts"
          
       -  name: Get Trader App in OpenLiberty
-         command : wget https://ibm.box.com/s/yyj83dpfvhdltn7q5i95mls9mybj47ud -O /opt/trader.zip
-
-      -  name: unzip distribution
          unarchive:
-           src: /opt/trader.zip
-           dest: /opt
-           remote_src: yes
+          src:  https://ibm.box.com/shared/static/yyj83dpfvhdltn7q5i95mls9mybj47ud.zip
+          dest: /op
+          remote_src: yes
          
       -  name: start liberty server
          ignore_errors: yes
@@ -60,7 +57,10 @@
             update_cache: yes
 
       -  name: Get Trader App in OpenLiberty
-         command : wget https://ibm.box.com/s/4u0mmdq00u86t74syn325tls2dvukita -O /opt/derbyServer.zip
+         unarchive: 
+           src: wget https://ibm.box.com/shared/static/4u0mmdq00u86t74syn325tls2dvukita.zip -O /opt/derbyServer.zip
+           dest: /op
+           remote_src: yes
 
       -  name: unzip distribution
          unarchive:
