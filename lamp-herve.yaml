@@ -19,21 +19,14 @@
             state: present
             update_cache: yes
 
-      -  name: Get Trader App in OpenLiberty
+      -  name: Get Derby Trader Databese 
          unarchive: 
            src: https://ibm.box.com/shared/static/4u0mmdq00u86t74syn325tls2dvukita.zip 
            dest: /opt
            remote_src: yes
-
-      -  name: unzip distribution
-         ignore_errors: yes
-         unarchive:
-           src: /opt/derbyServer.zip
-           dest: /opt
-           remote_src: yes
      
       -  name: start derby-server
-         command: nohup /usr/bin/sh /opt/DerbyServer/bin/start.sh &
+         command: nohup /usr/bin/sh /opt/DerbyServer/bin/start.sh -h {{ ipdb }}  &
 
 # Setup web servers
 -  hosts: "webhosts"
@@ -75,7 +68,7 @@
          
       -  name: sleep 30
          pause:
-            secondes: 30
+            seconds: 30
          
       -  name: start liberty server
          ignore_errors: yes
