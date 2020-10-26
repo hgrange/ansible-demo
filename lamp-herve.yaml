@@ -65,6 +65,6 @@
            dest: /opt
      
       -  name: start derby-server
-         command: 
+         command: /opt/DerbyServer/bin/start.sh
 
 
