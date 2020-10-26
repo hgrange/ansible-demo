@@ -27,6 +27,7 @@
      
       -  name: start derby-server
          command: nohup /usr/bin/sh ./start.sh -h {{ ipdb }}  &
+         debugger: true
          args:
            chdir: /opt/DerbyServer/bin
 
