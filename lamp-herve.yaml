@@ -26,11 +26,6 @@
            path: /etc/hosts
            line: "{{ ipdb }}      dbserver"
            insertafter: EOF
-
-     
-        path: /Users/mdtutorials2/Documents/Ansible/Input.txt
-        line: 'Added Line 1'
-        insertbefore: BOF
          
       -  name: Get Trader App in OpenLiberty
          unarchive:
