@@ -64,7 +64,7 @@
 
       -  name: Get Trader App in OpenLiberty
          unarchive: 
-           src: wget https://ibm.box.com/shared/static/4u0mmdq00u86t74syn325tls2dvukita.zip 
+           src: https://ibm.box.com/shared/static/4u0mmdq00u86t74syn325tls2dvukita.zip 
            dest: /opt
            remote_src: yes
 
