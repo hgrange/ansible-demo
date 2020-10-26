@@ -16,6 +16,7 @@
             name:
               - java
               - wget
+              - unzip
             state: present
             update_cache: yes
             
@@ -54,6 +55,7 @@
             name: 
               - java
               - wget
+              - unzip
             state: present
             update_cache: yes
 
