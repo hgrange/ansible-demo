@@ -21,10 +21,16 @@
             update_cache: yes
             
           
-      -  name: ip dbserver in config file
-         copy:
-           content: "{{ ipdb }} dbserver"
-           dest: "/etc/hosts"
+      -  name: ip dbserver in host file
+          lineinfile:
+            path: /etc/hosts
+            line: "{{ ipdb }}      dbserver"
+            insertafter: EOF
+
+     
+        path: /Users/mdtutorials2/Documents/Ansible/Input.txt
+        line: 'Added Line 1'
+        insertbefore: BOF
          
       -  name: Get Trader App in OpenLiberty
          unarchive:
