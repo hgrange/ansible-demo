@@ -64,6 +64,7 @@
            remote_src: yes
 
       -  name: unzip distribution
+         ignore_errors: yes
          unarchive:
            src: /opt/derbyServer.zip
            dest: /opt
