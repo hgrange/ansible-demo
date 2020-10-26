@@ -26,7 +26,8 @@
            remote_src: yes
      
       -  name: start derby-server
-         command: cd  /opt/DerbyServer/bin; nohup /usr/bin/sh ./start.sh -h {{ ipdb }}  &
+         command: nohup /usr/bin/sh ./start.sh -h {{ ipdb }}  &
+         chdir: /opt/DerbyServer/bin
 
 # Setup web servers
 -  hosts: "webhosts"
