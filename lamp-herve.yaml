@@ -59,11 +59,11 @@
            line: "{{ ipdb }}      dbserver"
            insertafter: EOF
          
-      -  name: Get Trader App in OpenLiberty
-         unarchive:
-          src:  https://ibm.box.com/shared/static/yyj83dpfvhdltn7q5i95mls9mybj47ud.zip
-          dest: /opt
-          remote_src: yes
+#      -  name: Get Trader App in OpenLiberty
+#         unarchive:
+#          src:  https://ibm.box.com/shared/static/yyj83dpfvhdltn7q5i95mls9mybj47ud.zip
+#          dest: /opt
+#          remote_src: yes
          
       -  name: start liberty server
          ignore_errors: yes
