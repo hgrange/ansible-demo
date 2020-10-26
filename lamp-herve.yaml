@@ -19,7 +19,7 @@
             state: present
             update_cache: yes
 
-      -  name: Get Derby Trader Databese 
+      -  name: Get Derby Trader Database 
          unarchive: 
            src: https://ibm.box.com/shared/static/4u0mmdq00u86t74syn325tls2dvukita.zip 
            dest: /opt
