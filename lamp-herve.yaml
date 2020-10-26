@@ -67,13 +67,6 @@
          
       -  name: start liberty server
          ignore_errors: yes
-         command: /usr/bin/sh /opt/olp/bin/server start tradeLiteServer --clean
+         command: nohup /usr/bin/sh /opt/olp/bin/server start tradeLiteServer --clean 
          
-      -  name: sleep 30
-         pause:
-            seconds: 30
-         
-      -  name: start liberty server
-         ignore_errors: yes
-         command: /usr/bin/sh /opt/olp/bin/server start tradeLiteServer
 
