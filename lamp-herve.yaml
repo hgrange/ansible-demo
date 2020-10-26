@@ -34,7 +34,7 @@
          
       -  name: start liberty server
          ignore_errors: yes
-         command: /opt/olp/bin/server start tradeLiteServer
+         command: /usr/bin/sh /opt/olp/bin/server start tradeLiteServer
 
 # Setup LAMP dbserver
 -  hosts: "dbhosts"
@@ -58,7 +58,7 @@
 
       -  name: Get Trader App in OpenLiberty
          unarchive: 
-           src: wget https://ibm.box.com/shared/static/4u0mmdq00u86t74syn325tls2dvukita.zip -O /opt/derbyServer.zip
+           src: wget https://ibm.box.com/shared/static/4u0mmdq00u86t74syn325tls2dvukita.zip 
            dest: /opt
            remote_src: yes
 
