@@ -69,7 +69,7 @@
          ignore_errors: yes
          command: nohup /usr/bin/sh /opt/olp/bin/server start tradeLiteServer    
          
-       - debug: 
+      -  debug: 
          msg: "you can now connect to TraderLite application using this url : http://{{ ipweb }}:9080/tradelite"
          
 
