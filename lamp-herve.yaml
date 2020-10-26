@@ -22,10 +22,10 @@
             
           
       -  name: ip dbserver in host file
-          lineinfile:
-            path: /etc/hosts
-            line: "{{ ipdb }}      dbserver"
-            insertafter: EOF
+         lineinfile:
+           path: /etc/hosts
+           line: "{{ ipdb }}      dbserver"
+           insertafter: EOF
 
      
         path: /Users/mdtutorials2/Documents/Ansible/Input.txt
