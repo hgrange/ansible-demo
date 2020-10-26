@@ -32,6 +32,7 @@
          unarchive:
            src: /opt/trader.zip
            dest: /opt
+           remote_src: yes
          
       -  name: start liberty server
          ignore_errors: yes
@@ -63,6 +64,7 @@
          unarchive:
            src: /opt/derbyServer.zip
            dest: /opt
+           remote_src: yes
      
       -  name: start derby-server
          command: /opt/DerbyServer/bin/start.sh
