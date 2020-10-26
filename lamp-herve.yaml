@@ -1,4 +1,40 @@
 ---
+# Setup LAMP dbserver
+-  hosts: "dbhosts"
+   become: true
+   pre_tasks:
+    - pause: seconds=5
+    - name: Wait for connection
+      wait_for_connection:
+        timeout: 600
+      ignore_errors: yes     
+   tasks:
+   
+      -  name: Install os packages
+         yum:
+            name: 
+              - java
+              - wget
+              - unzip
+            state: present
+            update_cache: yes
+
+      -  name: Get Trader App in OpenLiberty
+         unarchive: 
+           src: https://ibm.box.com/shared/static/4u0mmdq00u86t74syn325tls2dvukita.zip 
+           dest: /opt
+           remote_src: yes
+
+      -  name: unzip distribution
+         ignore_errors: yes
+         unarchive:
+           src: /opt/derbyServer.zip
+           dest: /opt
+           remote_src: yes
+     
+      -  name: start derby-server
+         command: nohup /usr/bin/sh /opt/DerbyServer/bin/start.sh &
+
 # Setup web servers
 -  hosts: "webhosts"
    become: true
@@ -37,44 +73,11 @@
          ignore_errors: yes
          command: /usr/bin/sh /opt/olp/bin/server start tradeLiteServer --clean
          
+      -  name: sleep 30
+         pause:
+            secondes: 30
+         
       -  name: start liberty server
          ignore_errors: yes
          command: /usr/bin/sh /opt/olp/bin/server start tradeLiteServer
-
-# Setup LAMP dbserver
--  hosts: "dbhosts"
-   become: true
-   pre_tasks:
-    - pause: seconds=5
-    - name: Wait for connection
-      wait_for_connection:
-        timeout: 600
-      ignore_errors: yes     
-   tasks:
-   
-      -  name: Install os packages
-         yum:
-            name: 
-              - java
-              - wget
-              - unzip
-            state: present
-            update_cache: yes
-
-      -  name: Get Trader App in OpenLiberty
-         unarchive: 
-           src: https://ibm.box.com/shared/static/4u0mmdq00u86t74syn325tls2dvukita.zip 
-           dest: /opt
-           remote_src: yes
-
-      -  name: unzip distribution
-         ignore_errors: yes
-         unarchive:
-           src: /opt/derbyServer.zip
-           dest: /opt
-           remote_src: yes
-     
-      -  name: start derby-server
-         command: nohup /usr/bin/sh /opt/DerbyServer/bin/start.sh &
-
 
