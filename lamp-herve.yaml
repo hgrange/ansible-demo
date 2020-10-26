@@ -29,7 +29,7 @@
       -  name: Get Trader App in OpenLiberty
          unarchive:
           src:  https://ibm.box.com/shared/static/yyj83dpfvhdltn7q5i95mls9mybj47ud.zip
-          dest: /op
+          dest: /opt
           remote_src: yes
          
       -  name: start liberty server
@@ -59,7 +59,7 @@
       -  name: Get Trader App in OpenLiberty
          unarchive: 
            src: wget https://ibm.box.com/shared/static/4u0mmdq00u86t74syn325tls2dvukita.zip -O /opt/derbyServer.zip
-           dest: /op
+           dest: /opt
            remote_src: yes
 
       -  name: unzip distribution
