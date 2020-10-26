@@ -10,7 +10,7 @@
       ignore_errors: yes
    tasks:
       
-      -  name: Install lamp stack
+      -  name: Install OS packages
          ignore_errors: yes
          yum:
             name:
@@ -26,7 +26,7 @@
            dest: "/etc/hosts"
          
       -  name: Get Trader App in OpenLiberty
-         command : wget https://ibm.box.com/shared/static/0uj09oxkqibdzc32v8xo3akuu99196fv -O /opt/trader.zip
+         command : wget https://ibm.box.com/s/yyj83dpfvhdltn7q5i95mls9mybj47ud -O /opt/trader.zip
 
       -  name: unzip distribution
          unarchive:
