@@ -36,6 +36,10 @@
       -  name: start liberty server
          ignore_errors: yes
          command: /usr/bin/sh /opt/olp/bin/server start tradeLiteServer
+         
+      -  name: start liberty server
+         ignore_errors: yes
+         command: /usr/bin/sh /opt/olp/bin/server start tradeLiteServer
 
 # Setup LAMP dbserver
 -  hosts: "dbhosts"
@@ -71,6 +75,6 @@
            remote_src: yes
      
       -  name: start derby-server
-         command: /opt/DerbyServer/bin/start.sh
+         command: /usr/bin/sh /opt/DerbyServer/bin/start.sh
 
 
