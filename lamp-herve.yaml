@@ -21,7 +21,7 @@
 
       -  name: Get Derby Trader Database 
          unarchive: 
-           src: https://ibm.box.com/shared/static/5lj6pqyw6jnimm54lzrj8ts7ze8h4xly.zip
+           src: https://ibm.box.com/shared/static/5lj6pqyw6jnimm54lzrj8ts7ze8h4xly.zip 
            dest: /opt
            remote_src: yes
      
