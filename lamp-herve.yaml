@@ -21,7 +21,7 @@
 
       -  name: Get Derby Trader Database 
          unarchive: 
-           src: https://ibm.box.com/shared/static/5lj6pqyw6jnimm54lzrj8ts7ze8h4xly.zip 
+           src: https://ibm.box.com/shared/static/demfqj4tk2ix0yxdkp9eijuaclpzp7pe.zip
            dest: /opt
            remote_src: yes
      
@@ -61,7 +61,7 @@
          
       -  name: Get Trader App in OpenLiberty
          unarchive:
-          src:  https://ibm.box.com/shared/static/x4hqv97fizee0svdylrxbp402ybvln5v.zip 
+          src:  https://ibm.box.com/shared/static/poy5gmsmiuqht99c9hxjdogzkmqmmujb.zip
           dest: /opt
           remote_src: yes
          
