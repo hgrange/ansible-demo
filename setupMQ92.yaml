@@ -19,7 +19,7 @@
         file: path={{ websphere_mq.wd }} state=directory
 
       - name: Untar MQ Series install file
-        command: tar zxf /vagrant/{{ websphere_mq.zip_file }}
+        command: tar zxf /nfs/{{ websphere_mq.zip_file }}
         chdir={{ websphere_mq.wd }}
         creates={{ websphere_mq.wd }}/mqlicense.sh
 
