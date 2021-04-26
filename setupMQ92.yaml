@@ -11,6 +11,10 @@
         timeout: 600
       ignore_errors: yes     
    tasks:
+      - name: mount NFS distribution
+        nfs_share_mounts:
+        - path: /mnt/remote
+          location: nfs.example.org:/data
       - name: Install required packages
         yum: name={{ item }} state=present
         with_items: websphere_mq.packages
