@@ -2,7 +2,7 @@
 # Install WebSphere MQ 
 #
 # Setup LAMP dbserver
--  hosts: "dbhosts"
+-  hosts: "mqhosts"
    become: true
    pre_tasks:
     - pause: seconds=5
