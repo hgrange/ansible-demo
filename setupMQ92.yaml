@@ -78,7 +78,7 @@
          remote_src: yes
       # Need to run this with ksh; script syntax is not bash-compliant
      - name: Accept MQ Series license
-       raw "{{ mq_rep }}/bin/mqlicense -accept -text_only"
+         raw "{{ mq_rep }}/bin/mqlicense -accept -text_only"
 
      - name: Setup MQ kernel params
        sysctl:
