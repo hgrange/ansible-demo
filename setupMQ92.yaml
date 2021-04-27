@@ -72,6 +72,7 @@
      - name: Untar MQ Series install file
        ansible.builtin.unarchive:
          owner: mqm
+         group: mqm
          src: "{{ nfsmount }}/{{ mq_zip_file }}"
          dest: "{{ mq_rep }}"
          creates: "{{ mq_rep }}/bin/crtmqm"
@@ -79,7 +80,9 @@
          
       # Need to run this with ksh; script syntax is not bash-compliant
      - name: Accept MQ Series license
-       raw: "{{ mq_rep }}/bin/mqlicense -accept -text_only"
+       command: "{{ mq_rep }}/bin/mqlicense -accept -text_only"
+       become: true
+       become_user: mqm
 
      - name: Setup MQ kernel params
        sysctl:
@@ -107,12 +110,16 @@
 
      - name: Create Queue Manager
        command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
+       become: true
+       become_user: mqm
        args:
          chdir: "{{ mq_rep }}/bin"
          creates: "/root/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
 
      - name: Start Queue Manager
        command: "{{ mq_rep }}/bin/strmqm {{ QM_NAME }}"
+       become: true
+       become_user: mqm
        ignore_errors: yes
        args:
          chdir: "{{ mq_rep }}/bin"
