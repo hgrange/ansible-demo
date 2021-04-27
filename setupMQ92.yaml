@@ -76,7 +76,8 @@
          creates: "{{ mq_rep }}/bin/crtmqm"
          remote_src: yes
      - debug:
-       msg: "{{ mq_rep }}/bin/mqlicense -accept -text_only"
+         msg: "{{ mq_rep }}/bin/mqlicense -accept -text_only"
+         remote_src: yes
       # Need to run this with ksh; script syntax is not bash-compliant
      - name: Accept MQ Series license
        ansible.builtin.command: "{{ mq_rep }}/bin/mqlicense -accept -text_only"
