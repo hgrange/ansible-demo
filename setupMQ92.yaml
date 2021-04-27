@@ -110,7 +110,7 @@
        with_items: "{{ limits_config }}"
 
      - name: Create Queue Manager
-       ansible.builtin.command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
+       command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
        args:
          chdir: "{{ mq_rep }}/bin"
          creates: "/root/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
