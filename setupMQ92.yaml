@@ -111,7 +111,7 @@
          creates: "/root/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
 
      - name: Start Queue Manager
-       ansible.builtin.command: "{{ mq_rep }}/bin/strmqm {{ QM_NAME }}"
+       command: "{{ mq_rep }}/bin/strmqm {{ QM_NAME }}"
        ignore_errors: yes
        args:
          chdir: "{{ mq_rep }}/bin"
