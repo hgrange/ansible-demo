@@ -47,6 +47,9 @@
 
 
   tasks:
+     - name: debug
+         msg: "System {{ inventory_hostname }} has uuid {{ ansible_product_uuid }}"
+         verbosity: 4
      - name: Install OS packages
        yum:
          name: "{{ os_packages }}"
