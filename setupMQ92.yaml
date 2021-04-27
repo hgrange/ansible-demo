@@ -80,10 +80,10 @@
       # Need to run this with ksh; script syntax is not bash-compliant
      - name: Accept MQ Series license
        ansible.builtin.command: "{{ mq_rep }}/bin/mqlicense -accept -text_only"
-       remote_src: yes
        args:
          chdir: "{{ mq_rep }}/bin"
          creates: /root/IBM/MQ/data/mqs.ini-old
+         remote_src: yes
 
      - name: Setup MQ kernel params
        sysctl:
