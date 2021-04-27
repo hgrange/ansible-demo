@@ -67,7 +67,7 @@
        ansible.builtin.user:
          name: mqm
          create_home: true
-         home: {{ mq_rep }}
+         home: "{{ mq_rep }}"
          
      - name: Untar MQ Series install file
        ansible.builtin.unarchive:
