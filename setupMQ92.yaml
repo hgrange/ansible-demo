@@ -63,19 +63,20 @@
          path: "{{ nfsmount }}"
          fstype: nfs
          state: mounted
-
-     - name: Create install directory
-       file: path={{ mq_rep }} state=directory
-
-     - name: Create install directory
-       file: path={{ mq_rep }}/tmp state=directory
-
+     - name: Add the user 'mqm' 
+       ansible.builtin.user:
+         name: mqm
+         create_home: true
+         home: {{ mq_rep }}
+         
      - name: Untar MQ Series install file
        ansible.builtin.unarchive:
+         owner: mqm
          src: "{{ nfsmount }}/{{ mq_zip_file }}"
          dest: "{{ mq_rep }}"
          creates: "{{ mq_rep }}/bin/crtmqm"
          remote_src: yes
+         
       # Need to run this with ksh; script syntax is not bash-compliant
      - name: Accept MQ Series license
        raw: "{{ mq_rep }}/bin/mqlicense -accept -text_only"
