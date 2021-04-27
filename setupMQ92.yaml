@@ -83,7 +83,6 @@
        args:
          chdir: "{{ mq_rep }}/bin"
          creates: /root/IBM/MQ/data/mqs.ini-old
-         remote_src: yes
 
      - name: Setup MQ kernel params
        sysctl:
