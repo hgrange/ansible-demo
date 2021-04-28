@@ -26,6 +26,7 @@
     - redhat-lsb-core
 
     mq_rep: /opt/mqm
+    mq_data: /var/mqm
     nfsmount: /nfs
     mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64_NOINST.tar.gz
 
@@ -67,7 +68,7 @@
        ansible.builtin.user:
          name: mqm
          create_home: true
-         home: "{{ mq_rep }}"
+         home: "{{ mq_data }}"
          
      - name: Untar MQ Series install file
        ansible.builtin.unarchive:
@@ -114,7 +115,7 @@
        become_user: mqm
        args:
          chdir: "{{ mq_rep }}/bin"
-         creates: "/root/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
+         creates: "{{ mqm_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
 
      - name: Start Queue Manager
        command: "{{ mq_rep }}/bin/strmqm {{ QM_NAME }}"
