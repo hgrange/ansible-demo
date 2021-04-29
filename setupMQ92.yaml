@@ -178,14 +178,9 @@
        become: true
        become_user: mqm
        
-#     - name: Start Web Console
-#       shell: su mqm -c "{{ mq_rep }}/web/bin/server start mqweb"
-
      - name: Start Web Console
-       command: "{{ mq_rep }}/web/bin/server start mqweb"
-       become: true
-       become_user: mqm
-       
+       shell: su mqm -c "nohup {{ mq_rep }}/bin/strmqweb"
+
      - debug: 
            msg: "You can now connect to the IBM Console using this url : https://{{ ansible_host }}:9443/ibmmq/console"
  
