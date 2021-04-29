@@ -134,7 +134,7 @@
          chdir: "{{ mq_rep }}/bin"
          
      - name: Get MQ installation name
-       command: "{{ mq_rep }}/bin/dspmqinst | grep InstName | awk '{ print $2 }'"
+       shell: "{{ mq_rep }}/bin/dspmqinst | grep InstName | awk '{ print $2 }'"
        register: installation
        become: true
        become_user: mqm    
@@ -156,8 +156,8 @@
          
      - replace:
          path: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb/mqwebuser.xml"
-         regexp: 'string or regular expression for search'
-         replace: 'word to replace the search string'
+         regexp: 'password="'
+         replace: 'password="1234567890'
          backup: yes
          
      - name: Accept web incoming requests
