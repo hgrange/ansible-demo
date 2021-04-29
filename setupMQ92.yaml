@@ -148,7 +148,7 @@
          
      - name: Copy server config for web console
        ansible.builtin.copy:
-         src: "{{ mq_rep }}/web/mq/samp/server.xml"
+         src: "{{ mq_rep }}/samp/web/server.xml"
          dest: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb/server.xml"
          remote_src: yes
          owner: mqm
