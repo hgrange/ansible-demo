@@ -181,3 +181,11 @@
        args:
          chdir: "{{ mq_rep }}/bin"
          
+     - name: Start Web Console
+       command: "{{ mq_rep }}/bin/strmqweb"
+       become: true
+       become_user: mqm
+       ignore_errors: yes
+       args:
+         chdir: "{{ mq_rep }}/bin"
+         
