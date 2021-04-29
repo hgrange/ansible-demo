@@ -175,4 +175,6 @@
        
      - name: Start Web Console
        shell: su mqm -c "export JAVA_HOME=/opt/mqm/java/jre64/jre; export WLP_USER_DIR={{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}; {{ mq_rep }}/web/bin/server start mqweb"
+       
+     - debug
        msg: "You can connect to the IBM MQ Console using this link : https://{{ ansible_host }}:9443/ibmmq/console"
