@@ -71,6 +71,13 @@
          home: "{{ mq_data }}"
          state: present
          
+     - name: Create MQ installation directory
+       ansible.builtin.file:
+         path: "{{ mq_rep }}"
+         owner: mqm
+         group: mqm
+         state: directory
+         
      - name: Untar MQ Series install file
        ansible.builtin.unarchive:
          owner: mqm
@@ -109,13 +116,6 @@
          state: present
          create: yes
        with_items: "{{ limits_config }}"
-       
-     - name: Create MQ installation directory
-       ansible.builtin.file:
-         path: "{{ mq_rep }}"
-         owner: mqm
-         group: mqm
-         state: directory
 
      - name: Create Queue Manager
        command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
@@ -143,9 +143,8 @@
          chdir: "{{ mq_rep }}/bin"
          
      - name: Copy user config for web console
-       command: "{{ mq_rep }}/bin/strmqm {{ QM_NAME }}"
-       become: true
-       become_user: mqm
-       ignore_errors: yes
-       args:
-         chdir: "{{ mq_rep }}/bin"
+       ansible.builtin.copy:
+         src: "{{ mq_rep }}/web/mq/samp/configuration/mqwebuser.xml"
+         dest: "{{ path_inst }}/servers/mqweb/"
+         owner: mqm
+         group: mqm
