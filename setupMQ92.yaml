@@ -112,7 +112,7 @@
        
      - name: Create MQ installation directory
        ansible.builtin.file:
-         path: {{ mq_rep }}
+         path: "{{ mq_rep }}"
          owner: mqm
          group: mqm
          state: directory
