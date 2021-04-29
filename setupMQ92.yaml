@@ -178,5 +178,4 @@
        
      - debug: 
            msg: "You can now connect to the IBM Console using this url : https://{{ ansible_host }}:9443/ibmmq/console"
-     - debug
-         msg: "You can connect to the IBM MQ Console using this link : https://{{ ipweb }}:9443/ibmmq/console"
+ 
