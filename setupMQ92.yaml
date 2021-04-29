@@ -139,3 +139,8 @@
          dest: "{{ mq_data }}/IBM/MQ/data/servers/mqweb/"
          owner: mqm
          group: mqm
+         
+     - name: Accept MQ Series license
+       command: "{{ mq_rep }}/bin/setmqweb properties -k httpHost -v '*'"
+       become: true
+       become_user: mqm
