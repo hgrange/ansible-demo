@@ -132,19 +132,10 @@
        ignore_errors: yes
        args:
          chdir: "{{ mq_rep }}/bin"
-         
-     - name: Get the MQ instance
-       command: "{{ mq_rep }}/bin/dspmqinst | grep path | awk '{ print $2}'"
-       become: true
-       become_user: mqm
-       ignore_errors: yes
-       register: path_inst
-       args:
-         chdir: "{{ mq_rep }}/bin"
-         
+                 
      - name: Copy user config for web console
        ansible.builtin.copy:
-         src: "{{ mq_rep }}/web/mq/samp/configuration/mqwebuser.xml"
-         dest: "{{ path_inst }}/servers/mqweb/"
+         src: "{{ mq_rep }}/samp/web/mqwebuser.xml"
+         dest: "{{ mq_data }}/IBM/MQ/data/servers/mqweb/"
          owner: mqm
          group: mqm
