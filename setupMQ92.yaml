@@ -69,6 +69,7 @@
          name: mqm
          create_home: true
          home: "{{ mq_data }}"
+         state: present
          
      - name: Untar MQ Series install file
        ansible.builtin.unarchive:
@@ -108,6 +109,13 @@
          state: present
          create: yes
        with_items: "{{ limits_config }}"
+       
+     - name: Create MQ installation directory
+       ansible.builtin.file:
+         path: {{ mq_rep }}
+         owner: mqm
+         group: mqm
+         state: directory
 
      - name: Create Queue Manager
        command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
@@ -118,6 +126,23 @@
          creates: "{{ mqm_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
 
      - name: Start Queue Manager
+       command: "{{ mq_rep }}/bin/strmqm {{ QM_NAME }}"
+       become: true
+       become_user: mqm
+       ignore_errors: yes
+       args:
+         chdir: "{{ mq_rep }}/bin"
+         
+     - name: Get the MQ instance
+       command: "{{ mq_rep }}/bin/dspmqinst | grep path | awk '{ print $2}'"
+       become: true
+       become_user: mqm
+       ignore_errors: yes
+       register: path_inst
+       args:
+         chdir: "{{ mq_rep }}/bin"
+         
+     - name: Copy user config for web console
        command: "{{ mq_rep }}/bin/strmqm {{ QM_NAME }}"
        become: true
        become_user: mqm
