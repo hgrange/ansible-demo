@@ -44,7 +44,12 @@
     limits_config:
     - "mqm       hard  nproc      4096"
     - "mqm       soft  nproc      4096"
-
+    
+    environment:
+      NVM_DIR: /var/local/nvm
+      JAVA_HOME: "{{mq_rep }}/java/jre64/jre"
+      WLP_USER_DIR: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}"
+      MQWEB_LTPA_SUFFIX: mq922
 
 
   tasks:
@@ -173,8 +178,13 @@
        become: true
        become_user: mqm
        
+#     - name: Start Web Console
+#       shell: su mqm -c "{{ mq_rep }}/web/bin/server start mqweb"
+
      - name: Start Web Console
-       shell: su mqm -c "export JAVA_HOME=/opt/mqm/java/jre64/jre; export WLP_USER_DIR={{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}; {{ mq_rep }}/web/bin/server start mqweb"
+       command: "{{ mq_rep }}/web/bin/server start mqweb"
+       become: true
+       become_user: mqm
        
      - debug: 
            msg: "You can now connect to the IBM Console using this url : https://{{ ansible_host }}:9443/ibmmq/console"
