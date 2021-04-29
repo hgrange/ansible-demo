@@ -155,10 +155,10 @@
          group: mqm
          
      - replace:
-       path: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb/mqwebuser.xml"
-       regexp: 'string or regular expression for search'
-       replace: 'word to replace the search string'
-       backup: yes
+         path: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb/mqwebuser.xml"
+         regexp: 'string or regular expression for search'
+         replace: 'word to replace the search string'
+         backup: yes
          
      - name: Accept web incoming requests
        command: "{{ mq_rep }}/bin/setmqweb properties -k httpHost -v '*'"
