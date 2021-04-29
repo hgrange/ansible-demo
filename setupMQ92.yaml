@@ -174,15 +174,7 @@
        become_user: mqm
        
      - name: Start Web Console
-       command: "{{ mq_rep }}/bin/strmqweb"
-       become: true
-       become_user: mqm
-       ignore_errors: yes
-       args:
-         chdir: "{{ mq_rep }}/bin"
-         
-     - name: Start Web Console
-       command: "{{ mq_rep }}/bin/strmqweb"
+       command: "export WLP_USER_DIR={{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers; {{ mq_rep }}/web/bin/server start mqweb"
        become: true
        become_user: mqm
        ignore_errors: yes
