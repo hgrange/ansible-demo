@@ -123,7 +123,7 @@
        become_user: mqm
        args:
          chdir: "{{ mq_rep }}/bin"
-         creates: "{{ mqm_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
+         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
 
      - name: Start Queue Manager
        command: "{{ mq_rep }}/bin/strmqm {{ QM_NAME }}"
