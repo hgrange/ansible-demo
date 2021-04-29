@@ -174,10 +174,5 @@
        become_user: mqm
        
      - name: Start Web Console
-       command: "export JAVA_HOME=/opt/mqm/java/jre64/jre; export WLP_USER_DIR={{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}; {{ mq_rep }}/web/bin/server start mqweb"
-       become: true
-       become_user: mqm
-       ignore_errors: yes
-       args:
-         chdir: "{{ mq_rep }}/bin"
-         
+       shell: su mqm -c "export JAVA_HOME=/opt/mqm/java/jre64/jre; export WLP_USER_DIR={{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}; {{ mq_rep }}/web/bin/server start mqweb"
+              
