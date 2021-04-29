@@ -145,7 +145,15 @@
          owner: mqm
          group: mqm
          state: directory
-                 
+         
+     - name: Copy server config for web console
+       ansible.builtin.copy:
+         src: "{{ mq_rep }}/web/mq/samp/server.xml"
+         dest: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb/server.xml"
+         remote_src: yes
+         owner: mqm
+         group: mqm
+         
      - name: Copy user config for web console
        ansible.builtin.copy:
          src: "{{ mq_rep }}/web/mq/samp/configuration/basic_registry.xml"
