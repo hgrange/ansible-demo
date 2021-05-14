@@ -11,7 +11,6 @@
      ignore_errors: yes
   tasks:
      - name: Define 3rd Alias IP
-       hosts: mqhosts[2]
        copy:
          dest: "/etc/sysconfig/network-scripts/ifcfg-eth0:1"
          content: |
