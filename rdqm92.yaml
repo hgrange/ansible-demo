@@ -26,9 +26,10 @@
     - redhat-lsb-core
 
     mq_rep: /opt/mqm
+    mq_distrib: /opt/tmp
     mq_data: /var/mqm
     nfsmount: /nfs
-    mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64_NOINST.tar.gz
+    mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64.tar.gz
     kmod-drdb: "{{ nfsmount }}/9-IBM-MQ-LAIT34411-kmod-drbd-9.0.25/el7/kmod-drbd-9/kmod-drbd-9.0.25_3.10.0_1160-1.x86_64.rpm"
 
     sysctl_config:
@@ -60,7 +61,7 @@
          content: |
            DEVICE=eth0:1
            ONPARENT=on
-           IPADDR={{ ip2 }}
+           IPADDR="{{ inventory_hostname_short }}-{{ ip2 }}"
            PREFIX=24
 
      - name: Restart Network
@@ -103,13 +104,20 @@
          group: mqm
          state: directory
          
+     - name: Create MQ installation directory
+       ansible.builtin.file:
+         path: "{{ mq_distrib }}"
+         owner: mqm
+         group: mqm
+         state: directory
+         
      - name: Untar MQ Series install file
        ansible.builtin.unarchive:
          owner: mqm
          group: mqm
          src: "{{ nfsmount }}/{{ mq_zip_file }}"
-         dest: "{{ mq_rep }}"
-         creates: "{{ mq_rep }}/bin/crtmqm"
+         dest: "{{ mq_distrib }}"
+         creates: "{{ mq_distrib }}/bin/crtmqm"
          remote_src: yes
          
       # Need to run this with ksh; script syntax is not bash-compliant
