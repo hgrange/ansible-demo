@@ -29,6 +29,7 @@
     mq_data: /var/mqm
     nfsmount: /nfs
     mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64_NOINST.tar.gz
+    kmod-drdb: "{{ nfsmount }}/9-IBM-MQ-LAIT34411-kmod-drbd-9.0.25/el7/kmod-drbd-9/kmod-drbd-9.0.25_3.10.0_1160-1.x86_64.rpm"
 
     sysctl_config:
       kernel.shmmni: 4096
@@ -71,7 +72,7 @@
        yum:
          name: "{{ os_packages }}"
          state: installed
-     - name: NFS mount directory
+     - name: Create NFS mount directory
        file:
          path: "{{ nfsmount }}"
          state: directory
@@ -82,6 +83,12 @@
          path: "{{ nfsmount }}"
          fstype: nfs
          state: mounted
+
+     - name: Install drbd kernel module
+       yum:
+         name: "{{ kmod-drdb }}"
+         state: installed
+         
      - name: Add the user 'mqm' 
        ansible.builtin.user:
          name: mqm
