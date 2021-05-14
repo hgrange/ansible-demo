@@ -19,7 +19,7 @@
            IPADDR="10.10.10.1"
            PREFIX=24  
            
-- hosts: mqhosts[2]
+- hosts: mqhosts[1]
   become: true
   pre_tasks:
    - pause: seconds=5
