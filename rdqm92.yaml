@@ -198,6 +198,21 @@
        args:
          chdir: "{{ mq_distrib }}/MQServer"
          
+     - name: Install DRDB Utils
+       shell: yum localinstall *.rpm -y
+       args:
+         chdir: "{{ mq_distrib }}/MQServer/Advanced/RDQM/PreReqs/el7/drbd-utils-9"
+         
+     - name: Install Pacemaker
+       shell: yum localinstall *.rpm -y
+       args:
+         chdir: "{{ mq_distrib }}/MQServer/Advanced/RDQM/PreReqs/el7/pacemaker-1"    
+         
+     - name: Install RDQM
+       shell: yum localinstall *.rpm -y
+       args:
+         chdir: "{{ mq_distrib }}/MQServer/Advanced/RDQM"        
+         
      - name: Create Queue Manager
        command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
        become: true
