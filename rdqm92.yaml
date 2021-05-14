@@ -1,6 +1,25 @@
 #
 # Install WebSphere MQ
 #
+- hosts: mqhosts[2]
+  become: true
+  pre_tasks:
+   - pause: seconds=5
+   - name: Wait for connection
+     wait_for_connection:
+       timeout: 600
+     ignore_errors: yes
+  tasks:
+     - name: Define 3rd Alias IP
+       hosts: mqhosts[2]
+       copy:
+         dest: "/etc/sysconfig/network-scripts/ifcfg-eth0:1"
+         content: |
+           DEVICE=eth0:1
+           ONPARENT=on
+           IPADDR="10.10.10.3"
+           PREFIX=24  
+    
 - hosts: "mqhosts"
   become: true
   pre_tasks:
@@ -52,24 +71,8 @@
       JAVA_HOME: "{{mq_rep }}/java/jre64/jre"
       WLP_USER_DIR: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}"
       MQWEB_LTPA_SUFFIX: mq922
-      host1_ip2: 10.10.10.1
-      host2_ip2: 10.10.10.2
-      host3_ip2: 10.10.10.3
-
-
+      
   tasks:
-     - name: Define 3rd Alias IP
-       hosts: mqhosts[2]
-       copy:
-         dest: "/etc/sysconfig/network-scripts/ifcfg-eth0:1"
-         content: |
-           DEVICE=eth0:1
-           ONPARENT=on
-           IPADDR="10.10.10.3"
-           PREFIX=24
-       
-     - debug: var=out.stdout_lines
-
      - name: Restart Network
        service:
          name: network
