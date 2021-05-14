@@ -131,7 +131,7 @@
 
      - name: Install drbd kernel module
        yum:
-         name: "{{ kmod-drdb }}"
+         name: "{{ kmod_drdb }}"
          state: installed
          
      - name: Add the user 'mqm' 
