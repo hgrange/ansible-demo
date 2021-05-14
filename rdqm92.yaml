@@ -184,6 +184,11 @@
          line: "{{ item.key }}={{ item.value }}"
          state: present
        with_dict: "{{ sysctl_config }}"
+       
+     - name: Create Volume Group drbdpool
+       lvg: 
+         vg: drbdpool
+         pvs: /dev/xvdc
 
      - name: Setup MQ limits
        lineinfile:
