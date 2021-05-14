@@ -30,7 +30,7 @@
     mq_data: /var/mqm
     nfsmount: /nfs
     mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64.tar.gz
-    kmod-drdb: "{{ nfsmount }}/9-IBM-MQ-LAIT34411-kmod-drbd-9.0.25/el7/kmod-drbd-9/kmod-drbd-9.0.25_3.10.0_1160-1.x86_64.rpm"
+    kmod_drdb: "{{ nfsmount }}/9-IBM-MQ-LAIT34411-kmod-drbd-9.0.25/el7/kmod-drbd-9/kmod-drbd-9.0.25_3.10.0_1160-1.x86_64.rpm"
 
     sysctl_config:
       kernel.shmmni: 4096
@@ -52,6 +52,9 @@
       JAVA_HOME: "{{mq_rep }}/java/jre64/jre"
       WLP_USER_DIR: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}"
       MQWEB_LTPA_SUFFIX: mq922
+      host1_ip2: 10.10.10.1
+      host2_ip2: 10.10.10.2
+      host3_ip2: 10.10.10.3
 
 
   tasks:
@@ -61,8 +64,14 @@
          content: |
            DEVICE=eth0:1
            ONPARENT=on
-           IPADDR="{{ inventory_hostname_short }}-{{ ip2 }}"
+           IPADDR="IP2"
            PREFIX=24
+           
+     - name: Substitute virtual IP
+       shell: "IP2=echo echo $`hostname -s`_ip2 | sh; sed -i \"s/IP2/$IP2/" /etc/sysconfig/network-scripts/ifcfg-eth0:1"
+       register: installation
+       become: true
+       become_user: mqm   
 
      - name: Restart Network
        service:
