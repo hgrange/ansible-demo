@@ -1,0 +1,186 @@
+#
+# Install WebSphere MQ
+#
+- hosts: "mqhosts"
+  become: true
+  pre_tasks:
+   - pause: seconds=5
+   - name: Wait for connection
+     wait_for_connection:
+       timeout: 600
+     ignore_errors: yes
+  vars:
+    os_packages:
+    - nfs-utils
+    - glibc.i686
+    - libstdc++.i686
+    - cifs-utils
+    - libcgroup
+    - libtool-ltdl
+    - lm_sensors-libs
+    - lvm2
+    - net-snmp-agent-libs
+    - net-snmp-libs
+    - perl-TimeDate
+    - psmisc
+    - redhat-lsb-core
+
+    mq_rep: /opt/mqm
+    mq_data: /var/mqm
+    nfsmount: /nfs
+    mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64_NOINST.tar.gz
+
+    sysctl_config:
+      kernel.shmmni: 4096
+      kernel.shmmax: 268435456
+      kernel.shmall: 2097152
+      kernel.semmsl: 32
+      kernel.semmns: 4096
+      kernel.semopm: 32
+      kernel.semmni: 128
+      kernel.threads-max: 32768
+      kernel.pid_max: 32768
+
+    limits_config:
+    - "mqm       hard  nproc      4096"
+    - "mqm       soft  nproc      4096"
+    
+    environment:
+      NVM_DIR: /var/local/nvm
+      JAVA_HOME: "{{mq_rep }}/java/jre64/jre"
+      WLP_USER_DIR: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}"
+      MQWEB_LTPA_SUFFIX: mq922
+
+
+  tasks:
+  
+     - name: Install OS packages
+       yum:
+         name: "{{ os_packages }}"
+         state: installed
+     - name: NFS mount directory
+       file:
+         path: "{{ nfsmount }}"
+         state: directory
+
+     - name: mount NFS distribution
+       mount:
+         src: "{{ nfsserver }}:{{ nfssrc }}"
+         path: "{{ nfsmount }}"
+         fstype: nfs
+         state: mounted
+     - name: Add the user 'mqm' 
+       ansible.builtin.user:
+         name: mqm
+         create_home: true
+         home: "{{ mq_data }}"
+         state: present
+         
+     - name: Create MQ installation directory
+       ansible.builtin.file:
+         path: "{{ mq_rep }}"
+         owner: mqm
+         group: mqm
+         state: directory
+         
+     - name: Untar MQ Series install file
+       ansible.builtin.unarchive:
+         owner: mqm
+         group: mqm
+         src: "{{ nfsmount }}/{{ mq_zip_file }}"
+         dest: "{{ mq_rep }}"
+         creates: "{{ mq_rep }}/bin/crtmqm"
+         remote_src: yes
+         
+      # Need to run this with ksh; script syntax is not bash-compliant
+     - name: Accept MQ Series license
+       command: "{{ mq_rep }}/bin/mqlicense -accept -text_only"
+       become: true
+       become_user: mqm
+
+     - name: Setup MQ kernel params
+       sysctl:
+         name: "{{ item.key }}"
+         value: "{{ item.value }}"
+         state: present
+         ignoreerrors: yes
+       with_dict: "{{ sysctl_config }}"
+
+     - name : Update /etc/sysctl.conf
+       lineinfile:
+         path: /etc/sysctl.conf
+         regexp: "^{{ item.key }}"
+         line: "{{ item.key }}={{ item.value }}"
+         state: present
+       with_dict: "{{ sysctl_config }}"
+
+     - name: Setup MQ limits
+       lineinfile:
+         dest: /etc/security/limits.d/99-mqm.conf create=yes
+         line: "{{ item }}"
+         state: present
+         create: yes
+       with_items: "{{ limits_config }}"
+
+     - name: Create Queue Manager
+       command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
+       become: true
+       become_user: mqm
+       args:
+         chdir: "{{ mq_rep }}/bin"
+         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
+
+     - name: Start Queue Manager
+       command: "{{ mq_rep }}/bin/strmqm {{ QM_NAME }}"
+       become: true
+       become_user: mqm
+       ignore_errors: yes
+       args:
+         chdir: "{{ mq_rep }}/bin"
+         
+     - name: Get MQ installation name
+       shell: "{{ mq_rep }}/bin/dspmqinst | grep InstName | awk '{ print $2 }'"
+       register: installation
+       become: true
+       become_user: mqm    
+       
+     - name: Create mqweb configuration directory
+       ansible.builtin.file:
+         path: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb"
+         owner: mqm
+         group: mqm
+         state: directory
+         
+     - name: Copy server config for web console
+       ansible.builtin.copy:
+         src: "{{ mq_rep }}/samp/web/server.xml"
+         dest: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb/server.xml"
+         remote_src: yes
+         owner: mqm
+         group: mqm
+         
+     - name: Copy user config for web console
+       ansible.builtin.copy:
+         src: "{{ mq_rep }}/web/mq/samp/configuration/basic_registry.xml"
+         dest: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb/mqwebuser.xml"
+         remote_src: yes
+         owner: mqm
+         group: mqm
+         
+     - replace:
+         path: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb/mqwebuser.xml"
+         regexp: 'password="'
+         replace: 'password="1234567890'
+         backup: yes
+         
+     - name: Accept web incoming requests
+       command: "{{ mq_rep }}/bin/setmqweb properties -k httpHost -v '*'"
+       become: true
+       become_user: mqm
+       
+     - name: Start Web Console
+       shell: su mqm -c "nohup {{ mq_rep }}/bin/strmqweb"
+
+     - debug: 
+           msg: "You can now connect to the IBM Console using this url : https://{{ ansible_host }}:9443/ibmmq/console"
+ 
