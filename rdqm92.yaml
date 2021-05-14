@@ -194,7 +194,7 @@
        
      - name: Install MQSeries
        yum:
-         name: "{{ mq_distrib }}/MQSeries*"
+         name: "{{ mq_distrib }}/MQServer/MQSeries*"
          state: installed
          
      - name: Create Queue Manager
