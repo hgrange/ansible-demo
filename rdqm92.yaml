@@ -85,6 +85,7 @@
     nfsmount: /nfs
     mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64.tar.gz
     kmod_drdb: "{{ nfsmount }}/9-IBM-MQ-LAIT34411-kmod-drbd-9.0.25/el7/kmod-drbd-9/kmod-drbd-9.0.25_3.10.0_1160-1.x86_64.rpm"
+    version: 9.2.2-0.x86_64
 
     sysctl_config:
       kernel.shmmni: 4096
@@ -194,7 +195,7 @@
        
      - name: Install MQSeries
        yum:
-         name: "{{ mq_distrib }}/MQServer/MQSeries*"
+         name: '{{ mq_distrib }}/MQServer/MQSeries*'
          state: installed
          
      - name: Create Queue Manager
