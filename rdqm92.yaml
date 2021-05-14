@@ -167,8 +167,6 @@
       # Need to run this with ksh; script syntax is not bash-compliant
      - name: Accept MQ Series license
        command: "{{ mq_distrib }}/MQServer/mqlicense.sh -accept"
-       become: true
-       become_user: mqm
 
      - name: Setup MQ kernel params
        sysctl:
