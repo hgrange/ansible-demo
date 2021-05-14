@@ -53,6 +53,19 @@
 
 
   tasks:
+     - name: Define 3rd Alias IP
+       copy:
+         dest: "/etc/sysconfig/network-scripts/ifcfg-eth0:1"
+         content: |
+           DEVICE=eth0:1
+           ONPARENT=on
+           IPADDR={{ ip2 }}
+           PREFIX=24
+
+     - name: Restart Network
+       service:
+         name: network
+         state: restarted
   
      - name: Install OS packages
        yum:
