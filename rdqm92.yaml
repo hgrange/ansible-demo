@@ -68,7 +68,7 @@
            PREFIX=24
            
      - name: Substitute virtual IP
-       shell: "IP2=$(env | grep `hostname -s` | grep ip2 | awk -F= '{ print $2 }'); echo IP2=$IP2; sed -i \"s/IP2/$IP2/\" /etc/sysconfig/network-scripts/ifcfg-eth0:1"
+       shell: "env | grep `hostname -s` | grep ip2 | awk -F= '{ print $2 }'; echo IP2=$IP2; sed -i \"s/IP2/$IP2/\" /etc/sysconfig/network-scripts/ifcfg-eth0:1"
        register: out
        
      - debug: var=out.stdout_lines
