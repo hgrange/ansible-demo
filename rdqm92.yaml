@@ -166,7 +166,7 @@
          
       # Need to run this with ksh; script syntax is not bash-compliant
      - name: Accept MQ Series license
-       command: "{{ mq_rep }}/MQServer/mqlicense.sh -accept"
+       command: "{{ mq_distrib }}/MQServer/mqlicense.sh -accept"
        become: true
        become_user: mqm
 
@@ -196,7 +196,7 @@
        
      - name: Install MQSeries
        yum:
-         name: "{{ mq_rep }}/MQSeries*"
+         name: "{{ mq_distrib }}/MQSeries*"
          state: installed
          
      - name: Create Queue Manager
