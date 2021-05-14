@@ -68,7 +68,7 @@
            PREFIX=24
            
      - name: Substitute virtual IP
-       shell: "IP2=echo echo $`hostname -s`_ip2 | sh; sed -i \"s/IP2/$IP2/" /etc/sysconfig/network-scripts/ifcfg-eth0:1"
+       shell: "IP2=echo echo $`hostname -s`_ip2 | sh; sed -i \"s/IP2/$IP2/\" /etc/sysconfig/network-scripts/ifcfg-eth0:1"
        register: installation
        become: true
        become_user: mqm   
