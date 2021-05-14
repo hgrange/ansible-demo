@@ -161,12 +161,12 @@
          group: mqm
          src: "{{ nfsmount }}/{{ mq_zip_file }}"
          dest: "{{ mq_distrib }}"
-         creates: "{{ mq_distrib }}/bin/crtmqm"
+         creates: "{{ mq_distrib }}/MQServer/mqlicense.sh"
          remote_src: yes
          
       # Need to run this with ksh; script syntax is not bash-compliant
      - name: Accept MQ Series license
-       command: "{{ mq_rep }}/bin/mqlicense -accept -text_only"
+       command: "{{ mq_rep }}/MQServer/mqlicense.sh -accept"
        become: true
        become_user: mqm
 
@@ -193,7 +193,12 @@
          state: present
          create: yes
        with_items: "{{ limits_config }}"
-
+       
+     - name: Install MQSeries
+       yum:
+         name: "{{ mq_rep }}/MQSeries*"
+         state: installed
+         
      - name: Create Queue Manager
        command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
        become: true
