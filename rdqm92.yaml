@@ -59,17 +59,14 @@
 
   tasks:
      - name: Define 3rd Alias IP
+       hosts: mqhosts[2]
        copy:
          dest: "/etc/sysconfig/network-scripts/ifcfg-eth0:1"
          content: |
            DEVICE=eth0:1
            ONPARENT=on
-           IPADDR="IP2"
+           IPADDR="10.10.10.3"
            PREFIX=24
-           
-     - name: Substitute virtual IP
-       shell: "env; echo IP2=$IP2; sed -i \"s/IP2/$IP2/\" /etc/sysconfig/network-scripts/ifcfg-eth0:1"
-       register: out
        
      - debug: var=out.stdout_lines
 
