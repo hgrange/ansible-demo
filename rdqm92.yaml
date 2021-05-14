@@ -149,7 +149,7 @@
          group: mqm
          state: directory
          
-     - name: Create MQ installation directory
+     - name: Create MQ distribution directory
        ansible.builtin.file:
          path: "{{ mq_distrib }}"
          owner: mqm
@@ -194,9 +194,9 @@
        with_items: "{{ limits_config }}"
        
      - name: Install MQSeries
-       yum:
-         name: '{{ mq_distrib }}/MQServer/MQSeries*'
-         state: installed
+       shell: yum localinstall *.rpm -y
+       args:
+         chdir: "{{ mq_distrib }}/MQServer"
          
      - name: Create Queue Manager
        command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
