@@ -203,21 +203,6 @@
      - name: Create Pacemaker cluster
        command: "{{ mq_rep }}/bin/rdqmadm -c"
        
-     - name: Create Queue Manager
-       command: "{{ mq_rep }}/bin/crtmqm -q {{ lookup('vars', ansible_hostname + '_crtmqm') }} {{ QM_NAME }}"
-       become: true
-       become_user: mqm
-       args:
-         chdir: "{{ mq_rep }}/bin"
-         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
-
-     - name: Start Queue Manager
-       command: "{{ mq_rep }}/bin/strmqm {{ QM_NAME }}"
-       become: true
-       become_user: mqm
-       ignore_errors: yes
-       args:
-         chdir: "{{ mq_rep }}/bin"
          
      - name: Get MQ installation name
        shell: "{{ mq_rep }}/bin/dspmqinst | grep InstName | awk '{ print $2 }'"
@@ -264,4 +249,52 @@
 
      - debug: 
            msg: "You can now connect to the IBM Console using this url : https://{{ ansible_host }}:9443/ibmmq/console"
- 
+           
+ - hosts: "mqhosts[1]"
+  become: true
+  pre_tasks:
+   - pause: seconds=1
+   - name: Wait for connection
+     wait_for_connection:
+       timeout: 600
+     ignore_errors: yes
+     
+  tasks:
+     - name: Create Queue Manager
+       command: "{{ mq_rep }}/bin/crtmqm -q -sxs {{ QM_NAME }}"
+       args:
+         chdir: "{{ mq_rep }}/bin"
+         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
+
+- hosts: "mqhosts[2]"
+  become: true
+  pre_tasks:
+   - pause: seconds=1
+   - name: Wait for connection
+     wait_for_connection:
+       timeout: 600
+     ignore_errors: yes
+     
+  tasks:
+     - name: Create Queue Manager
+       command: "{{ mq_rep }}/bin/crtmqm -q -sxs {{ QM_NAME }}"
+       args:
+         chdir: "{{ mq_rep }}/bin"
+         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
+         
+- hosts: "mqhosts[0]"
+  become: true
+  pre_tasks:
+   - pause: seconds=1
+   - name: Wait for connection
+     wait_for_connection:
+       timeout: 600
+     ignore_errors: yes
+     
+  tasks:
+     - name: Create Queue Manager
+       command: "{{ mq_rep }}/bin/crtmqm -q -sx {{ QM_NAME }}"
+       args:
+         chdir: "{{ mq_rep }}/bin"
+         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"         
+
