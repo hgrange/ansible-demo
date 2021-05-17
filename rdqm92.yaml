@@ -84,6 +84,7 @@
     mq_data: /var/mqm
     nfsmount: /nfs
     mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64.tar.gz
+    host1_repip
 
     sysctl_config:
       kernel.shmmni: 4096
@@ -107,6 +108,15 @@
       MQWEB_LTPA_SUFFIX: mq922
       
   tasks:
+     - name: What is my inventory_hostname
+       debug: var={{inventory_hostname}}
+
+     - name: What is my ansible_hostname
+       debug: var={{ansible_hostname}}
+      
+     - name: What is my inventory_hostname_short
+       debug: var={{inventory_hostname_short}}
+       
      - name: Restart Network
        service:
          name: network
