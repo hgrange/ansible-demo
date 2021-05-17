@@ -196,7 +196,10 @@
            Node:
              Name=host3
              HA_Replication={{ host3_ip2 }}
-         
+     
+     - name: Create Pacemaker cluster
+       command: "{{ mq_rep }}/bin/rdqmadm -c"
+       
      - name: Create Queue Manager
        command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
        become: true
