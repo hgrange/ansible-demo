@@ -34,6 +34,9 @@
     host1_ip3: 10.10.10.1
     host2_ip3: 10.10.10.2
     host3_ip3: 10.10.10.3
+    host1_crtmqm: -sxs
+    host2_crtmqm: -sx
+    host3_crtmqm: -sx
       
     sysctl_config:
       kernel.shmmni: 4096
@@ -201,7 +204,7 @@
        command: "{{ mq_rep }}/bin/rdqmadm -c"
        
      - name: Create Queue Manager
-       command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
+       command: "{{ mq_rep }}/bin/crtmqm -q {{ lookup('vars', ansible_hostname + '_crtmqm') }} {{ QM_NAME }}"
        become: true
        become_user: mqm
        args:
