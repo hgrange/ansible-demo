@@ -108,13 +108,16 @@
       
   tasks:
      - name: What is my inventory_hostname
-       debug: var={{inventory_hostname}}
+       debug: 
+         msg: "{{inventory_hostname}}"
 
      - name: What is my ansible_hostname
-       debug: var={{ansible_hostname}}
+       debug: 
+         msg: "{{ansible_hostname}}"
       
      - name: What is my inventory_hostname_short
-       debug: var={{inventory_hostname_short}}
+       debug: 
+         msg: "{{inventory_hostname_short}}"
        
      - name: Restart Network
        service:
