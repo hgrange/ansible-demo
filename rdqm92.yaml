@@ -129,7 +129,7 @@
          
      - name: get host variable
        debug:
-         msg : {{ vars[ host1 + '_ip' ] }}
+         msg : "{{ vars[host1 + '_ip'] }}"
       
      - name: What is my inventory_hostname_short
        debug: 
