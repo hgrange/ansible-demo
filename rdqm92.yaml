@@ -34,11 +34,6 @@
     host1_ip3: 10.10.10.1
     host2_ip3: 10.10.10.2
     host3_ip3: 10.10.10.3
-    
-    ip3:
-      - 10.10.10.1
-      - 10.10.10.2
-      - 10.10.10.3
       
     sysctl_config:
       kernel.shmmni: 4096
@@ -180,6 +175,21 @@
        shell: yum localinstall *.rpm -y
        args:
          chdir: "{{ mq_distrib }}/MQServer/Advanced/RDQM"        
+         
+     - name: Create init file for RDQM
+       copy:
+         dest: "/var/mqm/rdqm.ini"
+         remote_src: yes
+         content: |
+           Node:
+             Name=rdqm-node-1.spiranthes.com
+             HA_Replication={{ host1_ip2 }}
+           Node:
+             Name=rdqm-node-2.spiranthes.com
+             HA_Replication={{ host2_ip2 }}
+           Node:
+             Name=rdqm-node-3.spiranthes.com
+             HA_Replication={{ host3_ip2 }}
          
      - name: Create Queue Manager
        command: "{{ mq_rep }}/bin/crtmqm -q {{ QM_NAME }}"
