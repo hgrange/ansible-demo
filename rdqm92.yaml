@@ -84,7 +84,15 @@
     mq_data: /var/mqm
     nfsmount: /nfs
     mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64.tar.gz
-
+    host1_ip3=10.10.10.1
+    host2_ip3=10.10.10.2
+    host3_ip3=10.10.10.3
+    
+    ip3:
+      - 10.10.10.1
+      - 10.10.10.2
+      - 10.10.10.3
+      
     sysctl_config:
       kernel.shmmni: 4096
       kernel.shmmax: 268435456
@@ -107,6 +115,10 @@
       MQWEB_LTPA_SUFFIX: mq922
       
   tasks:
+     - name: Print all available facts
+       ansible.builtin.debug:
+         var: ansible_facts
+         
      - name: What is my inventory_hostname
        debug: 
          msg: "{{inventory_hostname}}"
@@ -114,6 +126,11 @@
      - name: What is my ansible_hostname
        debug: 
          msg: "{{ansible_hostname}}"
+         
+     - name: get host variable
+       debug:
+         msg : {{ vars[ host1 + '_ip' ] }}
+         msg: {{ vars
       
      - name: What is my inventory_hostname_short
        debug: 
