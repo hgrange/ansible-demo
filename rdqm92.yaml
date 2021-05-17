@@ -258,6 +258,9 @@
      wait_for_connection:
        timeout: 600
      ignore_errors: yes
+  vars:
+    mq_rep: /opt/mqm
+    mq_data: /var/mqm
      
   tasks:
      - name: Create Queue Manager
@@ -274,7 +277,9 @@
      wait_for_connection:
        timeout: 600
      ignore_errors: yes
-     
+  vars:
+    mq_rep: /opt/mqm
+    mq_data: /var/mqm   
   tasks:
      - name: Create Queue Manager
        command: "{{ mq_rep }}/bin/crtmqm -q -p 1414 -sxs {{ QM_NAME }}"
@@ -290,7 +295,9 @@
      wait_for_connection:
        timeout: 600
      ignore_errors: yes
-     
+  vars:
+    mq_rep: /opt/mqm
+    mq_data: /var/mqm   
   tasks:
      - name: Create Queue Manager
        command: "{{ mq_rep }}/bin/crtmqm -q -p 1414 -sx {{ QM_NAME }}"
