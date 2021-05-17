@@ -1,59 +1,6 @@
 #
 # Install WebSphere MQ
 #
-- hosts: mqhosts[0]
-  become: true
-  pre_tasks:
-   - pause: seconds=5
-   - name: Wait for connection
-     wait_for_connection:
-       timeout: 600
-     ignore_errors: yes
-  tasks:
-     - name: Define 3rd Alias IP
-       copy:
-         dest: "/etc/sysconfig/network-scripts/ifcfg-eth0:1"
-         content: |
-           DEVICE=eth0:1
-           ONPARENT=on
-           IPADDR="10.10.10.1"
-           PREFIX=24  
-           
-- hosts: mqhosts[1]
-  become: true
-  pre_tasks:
-   - pause: seconds=5
-   - name: Wait for connection
-     wait_for_connection:
-       timeout: 600
-     ignore_errors: yes
-  tasks:
-     - name: Define 3rd Alias IP
-       copy:
-         dest: "/etc/sysconfig/network-scripts/ifcfg-eth0:1"
-         content: |
-           DEVICE=eth0:1
-           ONPARENT=on
-           IPADDR="10.10.10.2"
-           PREFIX=24  
-           
-- hosts: mqhosts[2]
-  become: true
-  pre_tasks:
-   - pause: seconds=5
-   - name: Wait for connection
-     wait_for_connection:
-       timeout: 600
-     ignore_errors: yes
-  tasks:
-     - name: Define 3rd Alias IP
-       copy:
-         dest: "/etc/sysconfig/network-scripts/ifcfg-eth0:1"
-         content: |
-           DEVICE=eth0:1
-           ONPARENT=on
-           IPADDR="10.10.10.3"
-           PREFIX=24  
     
 - hosts: "mqhosts"
   become: true
