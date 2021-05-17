@@ -95,6 +95,12 @@
          home: "{{ mq_data }}"
          state: present
          
+     - name: Add a line to a file if the file does not exist, without passing regexp
+       ansible.builtin.lineinfile:
+         path: /etc/sudoers
+         line: "mqm ALL=(ALL) NOPASSWD:ALL"
+         create: yes
+         
      - name: Create MQ installation directory
        ansible.builtin.file:
          path: "{{ mq_rep }}"
