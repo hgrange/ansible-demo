@@ -115,18 +115,15 @@
       MQWEB_LTPA_SUFFIX: mq922
       
   tasks:
- 
-     - name: What is my ansible_hostname
-       debug: 
-         msg: "{{ansible_hostname}}"
-         
-     - name: get host variable
-       debug:
-         msg : "{{ lookup('vars', ansible_hostname + '_ip3') }}"
-      
-     - name: What is my inventory_hostname_short
-       debug: 
-         msg: "{{inventory_hostname_short}}"
+  
+     - name: Define 3rd Alias IP
+       copy:
+         dest: "/etc/sysconfig/network-scripts/ifcfg-eth0:1"
+         content: |
+           DEVICE=eth0:1
+           ONPARENT=on
+           IPADDR="{{ lookup('vars', ansible_hostname + '_ip3') }}"
+           PREFIX=24  
        
      - name: Restart Network
        service:
