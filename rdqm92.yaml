@@ -182,13 +182,13 @@
          remote_src: yes
          content: |
            Node:
-             Name=rdqm-node-1.spiranthes.com
+             Name=host1
              HA_Replication={{ host1_ip2 }}
            Node:
-             Name=rdqm-node-2.spiranthes.com
+             Name=host2
              HA_Replication={{ host2_ip2 }}
            Node:
-             Name=rdqm-node-3.spiranthes.com
+             Name=host3
              HA_Replication={{ host3_ip2 }}
          
      - name: Create Queue Manager
