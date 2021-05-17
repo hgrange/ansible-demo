@@ -122,7 +122,7 @@
          
      - name: get host variable
        debug:
-         msg : "{{ lookup('vars', host1 + '_ip') }}"
+         msg : "{{ lookup('vars', ansible_hostname + '_ip') }}"
       
      - name: What is my inventory_hostname_short
        debug: 
