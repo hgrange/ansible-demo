@@ -84,7 +84,6 @@
     mq_data: /var/mqm
     nfsmount: /nfs
     mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64.tar.gz
-    host1_repip
 
     sysctl_config:
       kernel.shmmni: 4096
