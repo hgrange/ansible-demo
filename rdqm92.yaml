@@ -5,7 +5,7 @@
 - hosts: "mqhosts"
   become: true
   pre_tasks:
-   - pause: seconds=5
+   - pause: seconds=1
    - name: Wait for connection
      wait_for_connection:
        timeout: 600
@@ -35,7 +35,7 @@
     host2_ip3: 10.10.10.2
     host3_ip3: 10.10.10.3
     host1_crtmqm: -sxs
-    host2_crtmqm: -sx
+    host2_crtmqm: -sxs
     host3_crtmqm: -sx
       
     sysctl_config:
