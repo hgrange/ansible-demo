@@ -188,13 +188,13 @@
          remote_src: yes
          content: |
            Node:
-             Name=host1
+             Name=host1.ibm.com
              HA_Replication={{ host1_ip2 }}
            Node:
-             Name=host2
+             Name=host2.ibm.com
              HA_Replication={{ host2_ip2 }}
            Node:
-             Name=host3
+             Name=host3.ibm.com
              HA_Replication={{ host3_ip2 }}
      
      - name: Create Pacemaker cluster
