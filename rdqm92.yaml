@@ -115,21 +115,14 @@
       MQWEB_LTPA_SUFFIX: mq922
       
   tasks:
-     - name: Print all available facts
-       ansible.builtin.debug:
-         var: ansible_facts
-         
-     - name: What is my inventory_hostname
-       debug: 
-         msg: "{{inventory_hostname}}"
-
+ 
      - name: What is my ansible_hostname
        debug: 
          msg: "{{ansible_hostname}}"
          
      - name: get host variable
        debug:
-         msg : "{{ vars[host1 + '_ip'] }}"
+         msg : "{{ lookup('vars', host1 + '_ip') }}"
       
      - name: What is my inventory_hostname_short
        debug: 
