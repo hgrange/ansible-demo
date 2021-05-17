@@ -250,7 +250,7 @@
      - debug: 
            msg: "You can now connect to the IBM Console using this url : https://{{ ansible_host }}:9443/ibmmq/console"
            
- - hosts: "mqhosts[1]"
+- hosts: "mqhosts[1]"
   become: true
   pre_tasks:
    - pause: seconds=1
