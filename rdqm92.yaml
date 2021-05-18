@@ -317,5 +317,8 @@
   vars:
      mq_rep: /opt/mqm 
   tasks:
-    - name: Accept web incoming requests
+    - name: Display RDQM status on each servers
       command: "{{ mq_rep }}/bin/rdqmstatus"
+      register: result
+    - debug:
+        var: result
