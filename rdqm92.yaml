@@ -300,7 +300,7 @@
          creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"   
          
      - name: Create the floating IP address
-       command: "{{ mq_rep }}/bin/rdqmint -m {{ QM_NAME }} -a  -f {{ float_ip }} -l eth1"
+       command: "{{ mq_rep }}/bin/rdqmint -m {{ QM_NAME }} -a  -f {{ float_ip }} -l eth1:1"
        args:
          chdir: "{{ mq_rep }}/bin"
          creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"         
