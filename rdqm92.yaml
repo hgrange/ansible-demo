@@ -303,6 +303,19 @@
        command: "{{ mq_rep }}/bin/rdqmint -m {{ QM_NAME }} -a  -f {{ float_ip }} -l eth1:1"
        args:
          chdir: "{{ mq_rep }}/bin"
-         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"         
+         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"  
+         
 
-
+- hosts: "mqhosts"
+  become: true
+  pre_tasks:
+    - pause: seconds=1
+    - name: Wait for connection
+      wait_for_connection:
+        timeout: 600
+      ignore_errors: yes
+  vars:
+     mq_rep: /opt/mqm 
+  tasks:
+    - name: Accept web incoming requests
+      command: "{{ mq_rep }}/bin/rdqmstatus
