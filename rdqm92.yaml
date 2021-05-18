@@ -31,12 +31,6 @@
     mq_data: /var/mqm
     nfsmount: /nfs
     mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64.tar.gz
-    host1_ip3: 10.10.10.1
-    host2_ip3: 10.10.10.2
-    host3_ip3: 10.10.10.3
-    host1_crtmqm: -sxs
-    host2_crtmqm: -sxs
-    host3_crtmqm: -sx
       
     sysctl_config:
       kernel.shmmni: 4096
@@ -63,18 +57,19 @@
   
      - name: Define 3rd Alias IP
        copy:
-         dest: "/etc/sysconfig/network-scripts/ifcfg-eth0:1"
+         dest: "/etc/sysconfig/network-scripts/ifcfg-eth1:1"
          content: |
-           DEVICE=eth0:1
+           DEVICE=eth1:1
            ONPARENT=on
-           IPADDR="{{ lookup('vars', ansible_hostname + '_ip3') }}"
+           IPADDR="{{ lookup('vars', ansible_hostname + '_iprdqm') }}"
            PREFIX=24  
        
-     - name: Restart Network
-       service:
-         name: network
-         state: restarted
-  
+     - name: make interface up
+       ansible.netcommon.net_interface:
+         name: eth1:1
+         enabled: true
+         state: up
+     
      - name: Install OS packages
        yum:
          name: "{{ os_packages }}"
