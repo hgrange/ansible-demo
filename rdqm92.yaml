@@ -64,10 +64,10 @@
            IPADDR="{{ lookup('vars', ansible_hostname + '_iprdqm') }}"
            PREFIX=24  
        
-     - name: make interface up
-       net_interface:
-         name: eth1:1
-         state: up
+     - name: Restart Network
+       service:
+         name: network
+         state: restarted
      
      - name: Install OS packages
        yum:
