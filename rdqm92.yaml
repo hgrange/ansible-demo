@@ -282,7 +282,7 @@
     mq_data: /var/mqm   
   tasks:
      - name: Create Queue Manager
-       command: "{{ mq_rep }}/bin/crtmqm -q -p -sxs {{ QM_NAME }}"
+       command: "{{ mq_rep }}/bin/crtmqm -q -sxs {{ QM_NAME }}"
        args:
          chdir: "{{ mq_rep }}/bin"
          creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
