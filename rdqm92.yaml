@@ -318,4 +318,4 @@
      mq_rep: /opt/mqm 
   tasks:
     - name: Accept web incoming requests
-      command: "{{ mq_rep }}/bin/rdqmstatus
+      command: "{{ mq_rep }}/bin/rdqmstatus"
