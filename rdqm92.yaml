@@ -65,9 +65,8 @@
            PREFIX=24  
        
      - name: make interface up
-       ansible.netcommon.net_interface:
+       net_interface:
          name: eth1:1
-         enabled: true
          state: up
      
      - name: Install OS packages
