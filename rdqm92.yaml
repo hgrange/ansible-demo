@@ -240,9 +240,6 @@
        
      - name: Start Web Console
        shell: su mqm -c "nohup {{ mq_rep }}/bin/strmqweb"
-
-     - debug: 
-           msg: "You can now connect to the IBM Console using this url : https://{{ ansible_host }}:9443/ibmmq/console"
            
 - hosts: "mqhosts[1]"
   become: true
@@ -305,7 +302,9 @@
          chdir: "{{ mq_rep }}/bin"
          creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"  
          
-
+     - debug: 
+          msg: "You can now connect to the IBM Console using this url : https://{{ float_ip }}:9443/ibmmq/console"
+          
 - hosts: "mqhosts"
   become: true
   pre_tasks:
