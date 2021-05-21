@@ -206,7 +206,7 @@
        
      - name: Create mqweb configuration directory
        ansible.builtin.file:
-         path: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb"
+         path: "{{ mq_data }}/web/installations/{{ installation.stdout }}/servers/mqweb"
          owner: mqm
          group: mqm
          state: directory
@@ -214,7 +214,7 @@
      - name: Copy server config for web console
        ansible.builtin.copy:
          src: "{{ mq_rep }}/samp/web/server.xml"
-         dest: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb/server.xml"
+         dest: "{{ mq_data }}/web/installations/{{ installation.stdout }}/servers/mqweb/server.xml"
          remote_src: yes
          owner: mqm
          group: mqm
@@ -222,13 +222,13 @@
      - name: Copy user config for web console
        ansible.builtin.copy:
          src: "{{ mq_rep }}/web/mq/samp/configuration/basic_registry.xml"
-         dest: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb/mqwebuser.xml"
+         dest: "{{ mq_data }}/web/installations/{{ installation.stdout }}/servers/mqweb/mqwebuser.xml"
          remote_src: yes
          owner: mqm
          group: mqm
          
      - replace:
-         path: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}/servers/mqweb/mqwebuser.xml"
+         path: "{{ mq_data }}/web/installations/{{ installation.stdout }}/servers/mqweb/mqwebuser.xml"
          regexp: 'password="'
          replace: 'password="1234567890'
          backup: yes
@@ -261,7 +261,7 @@
        command: "{{ mq_rep }}/bin/crtmqm -q -sxs {{ QM_NAME }}"
        args:
          chdir: "{{ mq_rep }}/bin"
-         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
+         creates: "{{ mq_data  }}/qmgrs/{{ QM_NAME }}"
 
 - hosts: "mqhosts[2]"
   become: true
@@ -279,7 +279,7 @@
        command: "{{ mq_rep }}/bin/crtmqm -q -sxs {{ QM_NAME }}"
        args:
          chdir: "{{ mq_rep }}/bin"
-         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"
+         creates: "{{ mq_data  }}/qmgrs/{{ QM_NAME }}"
          
 - hosts: "mqhosts[0]"
   become: true
@@ -297,10 +297,10 @@
        command: "{{ mq_rep }}/bin/crtmqm -q -sx {{ QM_NAME }}"
        args:
          chdir: "{{ mq_rep }}/bin"
-         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"   
+         creates: "{{ mq_data  }}/qmgrs/{{ QM_NAME }}"   
          
      - name: Create the floating IP address
-       command: "{{ mq_rep }}/bin/rdqmint -m {{ QM_NAME }} -a  -f {{ float_ip }} -l eth1:1"
+       command: "{{ mq_rep }}/bin/rdqmint -m {{ QM_NAME }} -a  -f {{ float_ip }} -l eth1"
        args:
          chdir: "{{ mq_rep }}/bin"
          creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"  
