@@ -300,7 +300,9 @@
        command: "{{ mq_rep }}/bin/rdqmint -m {{ QM_NAME }} -a  -f {{ float_ip }} -l eth1"
        args:
          chdir: "{{ mq_rep }}/bin"
-         creates: "{{ mq_data  }}/IBM/MQ/data/qmgrs/{{ QM_NAME }}"  
+       
+     - name: Display Config IP
+       command: /usr/sbin/ip a show dev eth1
          
      - debug: 
           msg: "You can now connect to the IBM Console using this url : https://{{ float_ip }}:9443/ibmmq/console"
