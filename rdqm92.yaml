@@ -62,7 +62,7 @@
            DEVICE=eth1:1
            ONPARENT=on
            IPADDR="{{ lookup('vars', ansible_hostname + '_iprdqm') }}"
-           PREFIX=24  
+           PREFIX=28
        
      - name: Restart Network
        service:
