@@ -95,7 +95,7 @@
      - name: Add the user 'mcm' 
        ansible.builtin.user:
          name: mcm
-         password: mcm1234567890 | password_hash('sha512') 
+         password: $6$ila2VaOg$krrY80XCTA76CpUK752DTdfblyNGniWehBsu0JzR8pcBt3/bdU7/OcfWIGQdFNch6QO.Ctbwu0eK5n/J1UQSJ. 
          create_home: true
          home: "/home/mcm"
          
