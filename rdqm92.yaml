@@ -310,7 +310,10 @@
        
      - name: Display Config IP
        command: /usr/sbin/ip a show dev eth1
-       
+       register: result
+     - debug:
+         var: result
+         
      - name: Local mq script
        copy:
          dest: "/var/mqm/script.mqsc"
