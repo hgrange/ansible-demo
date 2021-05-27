@@ -329,6 +329,8 @@
            
      - name: Execute MQ script
        command: /opt/mqm/bin/runmqsc -f /var/mqm/script.mqsc -v {{ QM_NAME }}
+       become: true
+       become_user: mqm
        register: result
      - debug:
          var: result
