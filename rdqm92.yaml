@@ -303,9 +303,7 @@
        
      - name: Display Config IP
        command: /usr/sbin/ip a show dev eth1
-         
-     - debug: 
-          msg: "You can now connect to the IBM Console using this url : https://{{ float_ip }}:9443/ibmmq/console"
+        
           
 - hosts: "mqhosts"
   become: true
@@ -323,3 +321,6 @@
       register: result
     - debug:
         var: result
+        
+    - debug: 
+        msg: "You can now connect to the IBM Console using this url : https://{{ float_ip }}:9443/ibmmq/console"
