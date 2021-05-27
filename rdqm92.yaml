@@ -324,11 +324,13 @@
            SET CHLAUTH(MQ.APP1.SVRCONN) TYPE(BLOCKUSER) USERLIST('*whatever')
            ALTER AUTHINFO(SYSTEM.DEFAULT.AUTHINFO.IDPWOS) AUTHTYPE(IDPWOS) ADOPTCTX(YES)
            DEFINE QL(Q1)
+           SET AUTHREC OBJTYPE(QMGR) PRINCIPAL('mcm') AUTHADD(CONNECT, INQ)
            SET AUTHREC PROFILE(Q1) OBJTYPE(QUEUE) PRINCIPAL('mcm') AUTHADD(GET,PUT)
            SET AUTHREC PROFILE(Q1) OBJTYPE(QUEUE) PRINCIPAL('mqm') AUTHADD(ALL)
+           REFRESH SECURITY 
            
      - name: Execute MQ script
-       command: /opt/mqm/bin/runmqsc -f /var/mqm/script.mqsc -v {{ QM_NAME }}
+       command: /opt/mqm/bin/runmqsc -f /var/mqm/script.mqsc  {{ QM_NAME }}
        become: true
        become_user: mqm
        register: result
@@ -347,7 +349,7 @@
      mq_rep: /opt/mqm 
   tasks:
     - name: Display RDQM status on each servers
-      command: "{{ mq_rep }}/bin/rdqmstatus"
+      command: "{{ mq_rep }}/bin/dspmq"
       register: result
     - debug:
         var: result
