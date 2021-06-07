@@ -313,7 +313,11 @@
        register: result
      - debug:
          var: result
-         
+     - name: Display Config IP
+       command: /opt/mqm/bin/runmqakm -keydb -create -db "/var/mqm/vols/qm1/qmgr/qm1/ssl/key.kdb" -pw ssltest -type cms -stash
+       become: true
+       become_user: mqm
+       
      - name: Local mq script
        copy:
          dest: "/var/mqm/script.mqsc"
