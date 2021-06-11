@@ -329,6 +329,9 @@
            SET AUTHREC PROFILE(Q1) OBJTYPE(QUEUE) PRINCIPAL('mqm') AUTHADD(ALL)
            REFRESH SECURITY 
            
+     - pause:
+         seconds: 60
+         
      - name: Execute MQ script
        command: /opt/mqm/bin/runmqsc -f /var/mqm/script.mqsc  {{ QM_NAME }}
        become: true
