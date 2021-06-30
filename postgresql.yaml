@@ -1,0 +1,361 @@
+#
+# Install WebSphere MQ
+#
+    
+- hosts: "mqhosts"
+  become: true
+  pre_tasks:
+   - pause: seconds=1
+   - name: Wait for connection
+     wait_for_connection:
+       timeout: 600
+     ignore_errors: yes
+  vars:
+    os_packages:
+    - nfs-utils
+    - glibc.i686
+    - libstdc++.i686
+    - cifs-utils
+    - libcgroup
+    - libtool-ltdl
+    - lm_sensors-libs
+    - lvm2
+    - net-snmp-agent-libs
+    - net-snmp-libs
+    - perl-TimeDate
+    - psmisc
+    - redhat-lsb-core
+   
+    mq_rep: /opt/mqm
+    mq_distrib: /opt/tmp
+    mq_data: /var/mqm
+    nfsmount: /nfs
+    mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64.tar.gz
+      
+    sysctl_config:
+      kernel.shmmni: 4096
+      kernel.shmmax: 268435456
+      kernel.shmall: 2097152
+      kernel.semmsl: 32
+      kernel.semmns: 4096
+      kernel.semopm: 32
+      kernel.semmni: 128
+      kernel.threads-max: 32768
+      kernel.pid_max: 32768
+
+    limits_config:
+    - "mqm       hard  nproc      4096"
+    - "mqm       soft  nproc      4096"
+    
+    environment:
+      NVM_DIR: /var/local/nvm
+      JAVA_HOME: "{{mq_rep }}/java/jre64/jre"
+      WLP_USER_DIR: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}"
+      MQWEB_LTPA_SUFFIX: mq922
+      
+  tasks:
+  
+     - name: Define 3rd Alias IP
+       copy:
+         dest: "/etc/sysconfig/network-scripts/ifcfg-eth1:1"
+         content: |
+           DEVICE=eth1:1
+           ONPARENT=on
+           IPADDR="{{ lookup('vars', ansible_hostname + '_iprdqm') }}"
+           PREFIX=28
+       
+     - name: Restart Network
+       service:
+         name: network
+         state: restarted
+     
+     - name: Install OS packages
+       yum:
+         name: "{{ os_packages }}"
+         state: installed
+     - name: Create NFS mount directory
+       file:
+         path: "{{ nfsmount }}"
+         state: directory
+
+     - name: mount NFS distribution
+       mount:
+         src: "{{ nfsserver }}:{{ nfssrc }}"
+         path: "{{ nfsmount }}"
+         fstype: nfs
+         state: mounted
+         
+     - name: Add the user 'mqm' 
+       ansible.builtin.user:
+         name: mqm
+         create_home: true
+         home: "{{ mq_data }}"
+         state: present
+         
+     - name: Add the user 'mcm' 
+       ansible.builtin.user:
+         name: mcm
+         password: $6$ila2VaOg$krrY80XCTA76CpUK752DTdfblyNGniWehBsu0JzR8pcBt3/bdU7/OcfWIGQdFNch6QO.Ctbwu0eK5n/J1UQSJ. 
+         create_home: true
+         home: "/home/mcm"
+         
+     - name: Add a line to a file if the file does not exist, without passing regexp
+       ansible.builtin.lineinfile:
+         path: /etc/sudoers
+         line: "mqm ALL=(ALL) NOPASSWD:ALL"
+         create: yes
+         
+     - name: Create MQ installation directory
+       ansible.builtin.file:
+         path: "{{ mq_rep }}"
+         owner: mqm
+         group: mqm
+         state: directory
+         
+     - name: Create MQ distribution directory
+       ansible.builtin.file:
+         path: "{{ mq_distrib }}"
+         owner: mqm
+         group: mqm
+         state: directory
+         
+     - name: Untar MQ Series install file
+       ansible.builtin.unarchive:
+         owner: mqm
+         group: mqm
+         src: "{{ nfsmount }}/{{ mq_zip_file }}"
+         dest: "{{ mq_distrib }}"
+         creates: "{{ mq_distrib }}/MQServer/mqlicense.sh"
+         remote_src: yes
+         
+      # Need to run this with ksh; script syntax is not bash-compliant
+     - name: Accept MQ Series license
+       command: "{{ mq_distrib }}/MQServer/mqlicense.sh -accept"
+
+     - name: Setup MQ kernel params
+       sysctl:
+         name: "{{ item.key }}"
+         value: "{{ item.value }}"
+         state: present
+         ignoreerrors: yes
+       with_dict: "{{ sysctl_config }}"
+
+     - name : Update /etc/sysctl.conf
+       lineinfile:
+         path: /etc/sysctl.conf
+         regexp: "^{{ item.key }}"
+         line: "{{ item.key }}={{ item.value }}"
+         state: present
+       with_dict: "{{ sysctl_config }}"
+       
+     - name: Create Volume Group drbdpool
+       lvg: 
+         vg: drbdpool
+         pvs: /dev/xvdc
+
+     - name: Setup MQ limits
+       lineinfile:
+         dest: /etc/security/limits.d/99-mqm.conf create=yes
+         line: "{{ item }}"
+         state: present
+         create: yes
+       with_items: "{{ limits_config }}"
+       
+     - name: Install drbd kernel module
+       yum:
+         name: "{{ mq_distrib }}/MQServer/Advanced/RDQM/PreReqs/el7/kmod-drbd-9/kmod-drbd-9.0.28_3.10.0_1160-1.x86_64.rpm"
+         state: installed
+       
+     - name: Install MQSeries
+       shell: yum localinstall *.rpm -y
+       args:
+         chdir: "{{ mq_distrib }}/MQServer"
+         
+     - name: Install DRDB Utils
+       shell: yum localinstall *.rpm -y
+       args:
+         chdir: "{{ mq_distrib }}/MQServer/Advanced/RDQM/PreReqs/el7/drbd-utils-9"
+         
+     - name: Install Pacemaker
+       shell: yum localinstall *.rpm -y
+       args:
+         chdir: "{{ mq_distrib }}/MQServer/Advanced/RDQM/PreReqs/el7/pacemaker-1"    
+         
+     - name: Install RDQM
+       shell: yum localinstall *.rpm -y
+       args:
+         chdir: "{{ mq_distrib }}/MQServer/Advanced/RDQM"        
+         
+     - name: Create init file for RDQM
+       copy:
+         dest: "/var/mqm/rdqm.ini"
+         remote_src: yes
+         content: |
+           Node:
+             Name=host1.ibm.com
+             HA_Replication={{ host1_ip2 }}
+           Node:
+             Name=host2.ibm.com
+             HA_Replication={{ host2_ip2 }}
+           Node:
+             Name=host3.ibm.com
+             HA_Replication={{ host3_ip2 }}
+     
+     - name: Create Pacemaker cluster
+       command: "{{ mq_rep }}/bin/rdqmadm -c"
+       
+         
+     - name: Get MQ installation name
+       shell: "{{ mq_rep }}/bin/dspmqinst | grep InstName | awk '{ print $2 }'"
+       register: installation
+       become: true
+       become_user: mqm    
+       
+     - name: Create mqweb configuration directory
+       ansible.builtin.file:
+         path: "{{ mq_data }}/web/installations/{{ installation.stdout }}/servers/mqweb"
+         owner: mqm
+         group: mqm
+         state: directory
+         
+     - name: Copy server config for web console
+       ansible.builtin.copy:
+         src: "{{ mq_rep }}/samp/web/server.xml"
+         dest: "{{ mq_data }}/web/installations/{{ installation.stdout }}/servers/mqweb/server.xml"
+         remote_src: yes
+         owner: mqm
+         group: mqm
+         
+     - name: Copy user config for web console
+       ansible.builtin.copy:
+         src: "{{ mq_rep }}/web/mq/samp/configuration/basic_registry.xml"
+         dest: "{{ mq_data }}/web/installations/{{ installation.stdout }}/servers/mqweb/mqwebuser.xml"
+         remote_src: yes
+         owner: mqm
+         group: mqm
+         
+     - replace:
+         path: "{{ mq_data }}/web/installations/{{ installation.stdout }}/servers/mqweb/mqwebuser.xml"
+         regexp: 'password="'
+         replace: 'password="1234567890'
+         backup: yes
+         
+     - name: Accept web incoming requests
+       command: "{{ mq_rep }}/bin/setmqweb properties -k httpHost -v '*'"
+       become: true
+       become_user: mqm
+       
+     - name: Start Web Console
+       shell: su mqm -c "nohup {{ mq_rep }}/bin/strmqweb"
+           
+- hosts: "mqhosts[1]"
+  become: true
+  pre_tasks:
+   - pause: seconds=1
+   - name: Wait for connection
+     wait_for_connection:
+       timeout: 600
+     ignore_errors: yes
+  vars:
+    mq_rep: /opt/mqm
+    mq_data: /var/mqm
+     
+  tasks:
+     - name: Create Queue Manager
+       command: "{{ mq_rep }}/bin/crtmqm -q -sxs {{ QM_NAME }}"
+       args:
+         chdir: "{{ mq_rep }}/bin"
+         creates: "{{ mq_data  }}/qmgrs/{{ QM_NAME }}"
+
+- hosts: "mqhosts[2]"
+  become: true
+  pre_tasks:
+   - pause: seconds=1
+   - name: Wait for connection
+     wait_for_connection:
+       timeout: 600
+     ignore_errors: yes
+  vars:
+    mq_rep: /opt/mqm
+    mq_data: /var/mqm   
+  tasks:
+     - name: Create Queue Manager
+       command: "{{ mq_rep }}/bin/crtmqm -q -sxs {{ QM_NAME }}"
+       args:
+         chdir: "{{ mq_rep }}/bin"
+         creates: "{{ mq_data  }}/qmgrs/{{ QM_NAME }}"
+         
+- hosts: "mqhosts[0]"
+  become: true
+  pre_tasks:
+   - pause: seconds=1
+   - name: Wait for connection
+     wait_for_connection:
+       timeout: 600
+     ignore_errors: yes
+  vars:
+    mq_rep: /opt/mqm
+    mq_data: /var/mqm   
+  tasks:
+     - name: Create Queue Manager
+       command: "{{ mq_rep }}/bin/crtmqm -q -sx {{ QM_NAME }}"
+       args:
+         chdir: "{{ mq_rep }}/bin"
+         creates: "{{ mq_data  }}/qmgrs/{{ QM_NAME }}"   
+         
+     - name: Create the floating IP address
+       command: "{{ mq_rep }}/bin/rdqmint -m {{ QM_NAME }} -a  -f {{ float_ip }} -l eth1"
+       args:
+         chdir: "{{ mq_rep }}/bin"
+       
+     - name: Display Config IP
+       command: /usr/sbin/ip a show dev eth1
+       register: result
+     - debug:
+         var: result
+         
+     - name: Local mq script
+       copy:
+         dest: "/var/mqm/script.mqsc"
+         content: |
+           DEFINE LISTENER(SYSTEM.LISTENER.TCP.0)  TRPTYPE(TCP)  CONTROL(QMGR) PORT(1414)
+           START LISTENER(SYSTEM.LISTENER.TCP.0)
+           DEFINE CHL(MQ.APP1.SVRCONN) CHLTYPE(SVRCONN)
+           SET CHLAUTH(MQ.APP1.SVRCONN) TYPE(BLOCKUSER) USERLIST('*whatever')
+           ALTER AUTHINFO(SYSTEM.DEFAULT.AUTHINFO.IDPWOS) AUTHTYPE(IDPWOS) ADOPTCTX(YES)
+           DEFINE QL(Q1) DEFPSIST(YES)
+           SET AUTHREC OBJTYPE(QMGR) PRINCIPAL('mcm') AUTHADD(CONNECT, INQ)
+           SET AUTHREC PROFILE(Q1) OBJTYPE(QUEUE) PRINCIPAL('mcm') AUTHADD(GET,PUT,BROWSE)
+           SET AUTHREC PROFILE(Q1) OBJTYPE(QUEUE) PRINCIPAL('mqm') AUTHADD(ALL)
+           REFRESH SECURITY 
+           
+     - pause:
+         seconds: 60
+         
+     - name: Execute MQ script
+       command: /opt/mqm/bin/runmqsc -f /var/mqm/script.mqsc  {{ QM_NAME }}
+       become: true
+       become_user: mqm
+       register: result
+     - debug:
+         var: result
+     
+- hosts: "mqhosts"
+  become: true
+  pre_tasks:
+    - pause: seconds=1
+    - name: Wait for connection
+      wait_for_connection:
+        timeout: 600
+      ignore_errors: yes
+  vars:
+     mq_rep: /opt/mqm 
+  tasks:
+    - name: Display RDQM status on each servers
+      command: "{{ mq_rep }}/bin/dspmq"
+      register: result
+    - debug:
+        var: result
+        
+    - debug: 
+        msg: "You can now connect to the IBM Console using this url : https://{{ float_ip }}:9443/ibmmq/console"
