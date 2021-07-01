@@ -38,13 +38,15 @@
          regexp: '^password_encryption ='
          line: password_encryption = md5
          
-     - replace:
+     - name: Update remote access
+       replace:
          path: "/var/lib/pgsql/13/data/pg_hba.conf"
          regexp: '@host    all             all             127.0.0.1/32'
          replace: '@host    all             all             {{ LAN }}'
          backup: yes
      
-    - replace:
+    - name: Allow old postgresql clients
+      replace:
          path: "/var/lib/pgsql/13/data/pg_hba.conf"
          regexp: 'scram-sha-256'
          replace: 'trust'
