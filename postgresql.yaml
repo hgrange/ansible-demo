@@ -1,8 +1,8 @@
 #
-# Install WebSphere MQ
+# Install PostgreSLQ
 #
     
-- hosts: "mqhosts"
+- hosts: "dbhosts"
   become: true
   pre_tasks:
    - pause: seconds=1
@@ -12,93 +12,62 @@
      ignore_errors: yes
   vars:
     os_packages:
-    - nfs-utils
-    - glibc.i686
-    - libstdc++.i686
-    - cifs-utils
-    - libcgroup
-    - libtool-ltdl
-    - lm_sensors-libs
-    - lvm2
-    - net-snmp-agent-libs
-    - net-snmp-libs
-    - perl-TimeDate
-    - psmisc
-    - redhat-lsb-core
-   
-    mq_rep: /opt/mqm
-    mq_distrib: /opt/tmp
-    mq_data: /var/mqm
-    nfsmount: /nfs
-    mq_zip_file: IBM_MQ_9.2.2_LINUX_X86-64.tar.gz
-      
-    sysctl_config:
-      kernel.shmmni: 4096
-      kernel.shmmax: 268435456
-      kernel.shmall: 2097152
-      kernel.semmsl: 32
-      kernel.semmns: 4096
-      kernel.semopm: 32
-      kernel.semmni: 128
-      kernel.threads-max: 32768
-      kernel.pid_max: 32768
-
-    limits_config:
-    - "mqm       hard  nproc      4096"
-    - "mqm       soft  nproc      4096"
+    - https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    - git
+    - postgresql13
+    - postgresql13-server
     
-    environment:
-      NVM_DIR: /var/local/nvm
-      JAVA_HOME: "{{mq_rep }}/java/jre64/jre"
-      WLP_USER_DIR: "{{ mq_data }}/IBM/MQ/data/web/installations/{{ installation.stdout }}"
-      MQWEB_LTPA_SUFFIX: mq922
+    PASSWORD: StrongDBPassword
+    LAN: 159.8.91.0/28
       
   tasks:
   
-     - name: Define 3rd Alias IP
-       copy:
-         dest: "/etc/sysconfig/network-scripts/ifcfg-eth1:1"
-         content: |
-           DEVICE=eth1:1
-           ONPARENT=on
-           IPADDR="{{ lookup('vars', ansible_hostname + '_iprdqm') }}"
-           PREFIX=28
-       
-     - name: Restart Network
-       service:
-         name: network
-         state: restarted
-     
      - name: Install OS packages
        yum:
          name: "{{ os_packages }}"
          state: installed
-     - name: Create NFS mount directory
-       file:
-         path: "{{ nfsmount }}"
-         state: directory
-
-     - name: mount NFS distribution
-       mount:
-         src: "{{ nfsserver }}:{{ nfssrc }}"
-         path: "{{ nfsmount }}"
-         fstype: nfs
-         state: mounted
          
-     - name: Add the user 'mqm' 
-       ansible.builtin.user:
-         name: mqm
-         create_home: true
-         home: "{{ mq_data }}"
-         state: present
+     - name: Add listener address
+       ansible.builtin.lineinfile:
+         path: /var/lib/pgsql/13/data/postgresql.conf
+         line: "listen_addresses = \'{{ ipdb }}\'"
+         create: yes
          
-     - name: Add the user 'mcm' 
-       ansible.builtin.user:
-         name: mcm
-         password: $6$ila2VaOg$krrY80XCTA76CpUK752DTdfblyNGniWehBsu0JzR8pcBt3/bdU7/OcfWIGQdFNch6QO.Ctbwu0eK5n/J1UQSJ. 
-         create_home: true
-         home: "/home/mcm"
+     - name: Setup password encryption
+       ansible.builtin.lineinfile:
+         path: /var/lib/pgsql/13/data/postgresql.conf
+         regexp: '^password_encryption ='
+         line: password_encryption = md5
          
+     - replace:
+         path: "/var/lib/pgsql/13/data/pg_hba.conf"
+         regexp: '@host    all             all             127.0.0.1/32'
+         replace: '@host    all             all             {{ LAN }}'
+         backup: yes
+     
+    - replace:
+         path: "/var/lib/pgsql/13/data/pg_hba.conf"
+         regexp: 'scram-sha-256'
+         replace: 'trust'
+         backup: yes 
+       
+       
+     - name: Systemctl start/enable postgresql-13
+       ansible.builtin.systemd:
+         name: postgresql-13
+         enabled: yes
+         stated: started
+         masked: no 
+         
+     - name: Get MQ installation name
+       shell: "psql -c \"alter user postgres with password \'{{ PASSWORD }}\'\"
+       become: true
+       become_user: postgres   
+       
+       
+       
+       
+       
      - name: Add a line to a file if the file does not exist, without passing regexp
        ansible.builtin.lineinfile:
          path: /etc/sudoers
