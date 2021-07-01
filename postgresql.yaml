@@ -45,8 +45,8 @@
          replace: '@host    all             all             {{ LAN }}'
          backup: yes
      
-    - name: Allow old postgresql clients
-      replace:
+     - name: Allow old postgresql clients
+       replace:
          path: "/var/lib/pgsql/13/data/pg_hba.conf"
          regexp: 'scram-sha-256'
          replace: 'trust'
