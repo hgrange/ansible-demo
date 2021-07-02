@@ -23,7 +23,7 @@
   
      - name: Install OS packages
        yum:
-         name: "{{ os_packages }}"
+         name: "{{ packages }}"
          state: installed
          
      - name: Initialisation Postgresql
