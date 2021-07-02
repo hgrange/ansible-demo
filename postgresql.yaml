@@ -28,7 +28,7 @@
          
      - name: Initialisation Postgresql
        command: /usr/bin/postgresql-setup initdb
-       ignore_errors: yes
+       ignore_errors: True
          
      - name: Add listener address
        ansible.builtin.lineinfile:
