@@ -62,7 +62,6 @@
        ansible.builtin.systemd:
          name: postgresql
          enabled: yes
-         stated: started
          masked: no 
          
      - name: Alter Postgres password
