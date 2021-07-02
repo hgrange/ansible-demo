@@ -10,7 +10,8 @@
    - name: Wait for connection
      wait_for_connection:
        timeout: 600
-     ignore_errors: yes
+     ignore_errors: True
+
   vars:
     packages:
     - postgresql
