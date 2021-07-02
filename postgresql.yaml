@@ -65,7 +65,9 @@
          masked: no 
          
      - name: Alter Postgres password
-       shell: "psql -c \"alter user postgres with password \'{{ PASSWORD }}\'\""
+       shell: 
+         cmd: |
+           psql -c "alter user postgres with password '{{ PASSWORD }}'"
        become: true
        become_user: postgres   
        
