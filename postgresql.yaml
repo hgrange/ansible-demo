@@ -12,10 +12,9 @@
        timeout: 600
      ignore_errors: yes
   vars:
-    os_packages:
-    - https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-    - postgresql13
-    - postgresql13-server
+    packages:
+    - postgresql
+    - postgresql-server
     
     PASSWORD: StrongDBPassword
     LAN: 159.8.91.0/28
@@ -27,36 +26,39 @@
          name: "{{ os_packages }}"
          state: installed
          
+     - name: Initialisation Postgresql
+       command: /usr/bin/postgresql-setup initdb
+         
      - name: Add listener address
        ansible.builtin.lineinfile:
-         path: /var/lib/pgsql/13/data/postgresql.conf
+         path: /var/lib/pgsql/data/postgresql.conf
          line: "listen_addresses = \'{{ ipdb }}\'"
          create: yes
          
-     - name: Setup password encryption
+     - name: Add md5 password encryption
        ansible.builtin.lineinfile:
-         path: /var/lib/pgsql/13/data/postgresql.conf
-         regexp: '^password_encryption ='
-         line: password_encryption = md5
-         
+         path: /var/lib/pgsql/data/postgresql.conf
+         line: "password_encryption = md5"
+         create: yes
+                 
      - name: Update remote access
        replace:
-         path: "/var/lib/pgsql/13/data/pg_hba.conf"
+         path: "/var/lib/pgsql/data/pg_hba.conf"
          regexp: '@host    all             all             127.0.0.1/32'
          replace: '@host    all             all             {{ LAN }}'
          backup: yes
      
      - name: Allow old postgresql clients
        replace:
-         path: "/var/lib/pgsql/13/data/pg_hba.conf"
+         path: "/var/lib/pgsql/data/pg_hba.conf"
          regexp: 'scram-sha-256'
          replace: 'trust'
          backup: yes 
        
        
-     - name: Systemctl start/enable postgresql-13
+     - name: Systemctl start/enable postgresql
        ansible.builtin.systemd:
-         name: postgresql-13
+         name: postgresql
          enabled: yes
          stated: started
          masked: no 
