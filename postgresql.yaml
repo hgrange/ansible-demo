@@ -69,6 +69,12 @@
          state: started
          masked: no 
          
+     - name: Systemctl restart postgresql
+       ansible.builtin.systemd:
+         name: postgresql
+         state: restarted
+         masked: no 
+         
      - name: Alter Postgres password
        shell: 
          cmd: |
