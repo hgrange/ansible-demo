@@ -121,5 +121,3 @@
          
      - name: Insert data
        shell: "PASSWORD={{ dbpassword }} psql -h {{ ipdb }} -d {{ dbname }} < /root/pagila-insert-data.sql"
-       become: true
-       become_user: postgres  
