@@ -88,7 +88,7 @@
      - name: Download schema
        get_url:
          url: https://github.com/hgrange/pagila/raw/master/pagila-schema.sql
-         dest: /var/lib/pqsql/pagila-schema.sql
+         dest: /var/lib/pgsql/pagila-schema.sql
          owner: postgres
          mode: '0644'  
        
