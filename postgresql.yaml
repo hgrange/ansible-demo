@@ -77,10 +77,10 @@
        become: true
        become_user: postgres   
        
-     - name: Alter Postgres password
+     - name: Create Database
        shell: 
          cmd: |
-           psql -c "CREATE DATABASE {{ dbname }};\""
+           psql -c "CREATE DATABASE {{ dbname }};"
        become: true
        become_user: postgres   
        
