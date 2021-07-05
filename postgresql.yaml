@@ -58,10 +58,16 @@
          backup: yes 
        
        
-     - name: Systemctl start/enable postgresql
+     - name: Systemctl enable postgresql
        ansible.builtin.systemd:
          name: postgresql
          enabled: yes
+         masked: no 
+         
+     - name: Systemctl start postgresql
+       ansible.builtin.systemd:
+         name: postgresql
+         state: started
          masked: no 
          
      - name: Alter Postgres password
