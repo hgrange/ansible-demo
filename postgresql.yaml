@@ -85,7 +85,7 @@
      - name: Create Database
        shell: 
          cmd: |
-           psql -c "CREATE DATABASE {{ dbname }};"
+           psql -c "create database {{ dbname }};"
        become: true
        become_user: postgres   
        ignore_errors: True
