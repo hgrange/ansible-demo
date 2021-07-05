@@ -120,4 +120,4 @@
          mode: '0644'     
          
      - name: Insert data
-       shell: "PASSWORD={{ dbpassword }} psql -h {{ ipdb }} -d {{ dbname }} < /root/pagila-insert-data.sql"
+       shell: "PASSWORD={{ dbpassword }} psql -h {{ ipdb }} -U postgres -d {{ dbname }} < /root/pagila-insert-data.sql"
