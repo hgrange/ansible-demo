@@ -42,13 +42,12 @@
          path: /var/lib/pgsql/data/postgresql.conf
          line: "password_encryption = on"
          create: yes
-                 
-     - name: Update remote access
-       replace:
-         path: "/var/lib/pgsql/data/pg_hba.conf"
-         regexp: '@host    all             all             127.0.0.1/32'
-         replace: '@host    all             all             {{ LAN }}'
-         backup: yes
+         
+     - name: Allow remote connections
+       ansible.builtin.lineinfile:
+         path: /var/lib/pgsql/data/pg_hba.conf
+         line: "host    all     postgres        0.0.0.0/0 md5"
+         create: yes
      
      - name: Allow old postgresql clients
        replace:
