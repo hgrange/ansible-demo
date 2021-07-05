@@ -83,6 +83,7 @@
            psql -c "CREATE DATABASE {{ dbname }};"
        become: true
        become_user: postgres   
+       ignore_errors: True
        
      - name: Download schema
        get_url:
