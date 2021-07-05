@@ -19,6 +19,7 @@
     
     PASSWORD: StrongDBPassword
     LAN: 159.8.91.0/28
+    DBNAME: pagila
       
   tasks:
   
@@ -72,18 +73,21 @@
        become_user: postgres   
        
      - name: Alter Postgres password
-       shell: "psql -c \"CREATE DATABASE {{ DBNAME }};\""
+       shell: 
+         cmd: |
+           psql -c "CREATE DATABASE {{ DBNAME }};\""
        become: true
        become_user: postgres   
        
      - name: Download schema
        get_url:
          url: https://github.com/hgrange/pagila/raw/master/pagila-schema.sql
-         dest: /root/pagila-schema.sql
+         dest: /var/lib/posgres/pagila-schema.sql
+         owner: postgres
          mode: '0644'  
        
      - name: Create schema
-       shell: "psql -d {{ DBNAME }} < /root/pagila-schema.sql"
+       shell: "psql -d {{ DBNAME }} < /var/lib/postgres/pagila-schema.sql"
        become: true
        become_user: postgres  
          
