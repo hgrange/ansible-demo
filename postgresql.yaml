@@ -17,9 +17,8 @@
     - postgresql
     - postgresql-server
     
-    PASSWORD: StrongDBPassword
     LAN: 159.8.91.0/28
-    DBNAME: pagila
+ 
       
   tasks:
   
@@ -68,14 +67,14 @@
      - name: Alter Postgres password
        shell: 
          cmd: |
-           psql -c "alter user postgres with password '{{ PASSWORD }}'"
+           psql -c "alter user postgres with password '{{ dbpassword }}'"
        become: true
        become_user: postgres   
        
      - name: Alter Postgres password
        shell: 
          cmd: |
-           psql -c "CREATE DATABASE {{ DBNAME }};\""
+           psql -c "CREATE DATABASE {{ dbname }};\""
        become: true
        become_user: postgres   
        
@@ -87,7 +86,7 @@
          mode: '0644'  
        
      - name: Create schema
-       shell: "psql -d {{ DBNAME }} < /var/lib/postgres/pagila-schema.sql"
+       shell: "psql -d {{ dbname }} < /var/lib/postgres/pagila-schema.sql"
        become: true
        become_user: postgres  
          
@@ -114,6 +113,6 @@
          mode: '0644'     
          
      - name: Insert data
-       shell: "PASSWORD={{ PASSWORD }} psql -h {{ ipdb }} -d {{ DBNAME }} < /root/pagila-insert-data.sql"
+       shell: "PASSWORD={{ dbpassword }} psql -h {{ ipdb }} -d {{ dbname }} < /root/pagila-insert-data.sql"
        become: true
        become_user: postgres  
