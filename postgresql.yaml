@@ -126,3 +126,7 @@
          
      - name: Insert data
        shell: "PASSWORD={{ dbpassword }} psql -h {{ ipdb }} -U postgres -d {{ dbname }} < /root/pagila-insert-data.sql"
+       register: result
+       
+     - debug:
+         var: result
